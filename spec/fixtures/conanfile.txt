@@ -1,0 +1,6 @@
+[requires]
+zlib/1.2.11
+boost/1.76.0
+
+[build_requires]
+cmake/3.21.0

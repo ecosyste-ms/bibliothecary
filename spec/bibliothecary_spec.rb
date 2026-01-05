@@ -17,6 +17,7 @@ describe Bibliothecary do
           Bibliothecary::Parsers::Clojars,
           Bibliothecary::Parsers::CocoaPods,
           Bibliothecary::Parsers::Cog,
+          Bibliothecary::Parsers::Conan,
           Bibliothecary::Parsers::Conda,
           Bibliothecary::Parsers::CPAN,
           Bibliothecary::Parsers::CRAN,

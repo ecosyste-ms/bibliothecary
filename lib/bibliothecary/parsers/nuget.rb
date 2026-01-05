@@ -66,32 +66,24 @@ module Bibliothecary
       def self.parse_packages_lock_json(file_contents, options: {})
         manifest = JSON.parse file_contents
 
-        frameworks = {}
-        manifest.fetch("dependencies", []).each do |framework, deps|
-          frameworks[framework] = deps
-            .reject { |_name, details| details["type"] == "Project" } # Projects do not have versions
+        # Merge dependencies from all target frameworks, deduping by name.
+        # Different frameworks may have different versions of the same package,
+        # but we can only report one version per package.
+        dependencies = manifest.fetch("dependencies", {}).flat_map do |_framework, deps|
+          deps
+            .reject { |_name, details| details["type"] == "Project" }
             .map do |name, details|
               Dependency.new(
                 name: name,
-                # 'resolved' has been set in all examples so far
-                # so fallback to requested is pure paranoia
                 requirement: details.fetch("resolved", details.fetch("requested", "*")),
                 type: "runtime",
                 source: options.fetch(:filename, nil),
                 platform: platform_name
               )
             end
-        end
+        end.uniq(&:name)
 
-        unless frameworks.empty?
-          # we should really return multiple manifests, but bibliothecary doesn't
-          # do that yet so at least pick deterministically.
-
-          # Note, frameworks can be empty, so remove empty ones and then return the last sorted item if any
-          frameworks.delete_if { |_k, v| v.empty? }
-          return ParserResult.new(dependencies: frameworks[frameworks.keys.max]) unless frameworks.empty?
-        end
-        ParserResult.new(dependencies: [])
+        ParserResult.new(dependencies: dependencies)
       end
 
       def self.parse_packages_config(file_contents, options: {})
