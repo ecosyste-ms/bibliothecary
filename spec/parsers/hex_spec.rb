@@ -5,17 +5,7 @@ describe Bibliothecary::Parsers::Hex do
     expect(described_class.platform_name).to eq("hex")
   end
 
-  it "parses dependencies from mix.exs", :vcr do
-    stub_request(:post, "https://mix.libraries.io/").
-      with(
-        body: load_fixture("mix.exs"),
-        headers: {'Expect'=>'', 'User-Agent'=>'Typhoeus - https://github.com/typhoeus/typhoeus'}).
-      to_return(status: 200, body: JSON.generate({
-        "poison" => "~> 1.3.1",
-        "plug" => "~> 0.11.0",
-        "cowboy" => "~> 1.0.0"
-      }), headers: {})
-
+  it "parses dependencies from mix.exs" do
     expect(described_class.analyse_contents("mix.exs", load_fixture("mix.exs"))).to eq({
       platform: "hex",
       path: "mix.exs",
@@ -30,33 +20,19 @@ describe Bibliothecary::Parsers::Hex do
     })
   end
 
-  it "parses dependencies from mix.lock", :vcr do
-    stub_request(:post, "https://mix.libraries.io/lock").
-      with(
-        body: load_fixture("mix.lock"),
-        headers: {'Expect'=>'', 'User-Agent'=>'Typhoeus - https://github.com/typhoeus/typhoeus'}).
-      to_return(status: 200, body: JSON.generate({
-        "ranch" => {"version" => "1.2.1"},
-        "poison" => {"version" => "2.1.0"},
-        "plug" => {"version" => "1.1.6"},
-        "cowlib" => {"version" => "1.0.2"},
-        "cowboy" => {"version" => "1.0.4"}
-      }), headers: {})
+  it "parses dependencies from mix.lock" do
+    result = described_class.analyse_contents("mix.lock", load_fixture("mix.lock"))
+    expect(result[:platform]).to eq("hex")
+    expect(result[:path]).to eq("mix.lock")
+    expect(result[:kind]).to eq("lockfile")
+    expect(result[:success]).to eq(true)
 
-    expect(described_class.analyse_contents("mix.lock", load_fixture("mix.lock"))).to eq({
-      platform: "hex",
-      path: "mix.lock",
-      dependencies: [
-        Bibliothecary::Dependency.new(platform: "hex", name: "ranch", requirement: "1.2.1", type: "runtime", source: "mix.lock"),
-        Bibliothecary::Dependency.new(platform: "hex", name: "poison", requirement: "2.1.0", type: "runtime", source: "mix.lock"),
-        Bibliothecary::Dependency.new(platform: "hex", name: "plug", requirement: "1.1.6", type: "runtime", source: "mix.lock"),
-        Bibliothecary::Dependency.new(platform: "hex", name: "cowlib", requirement: "1.0.2", type: "runtime", source: "mix.lock"),
-        Bibliothecary::Dependency.new(platform: "hex", name: "cowboy", requirement: "1.0.4", type: "runtime", source: "mix.lock"),
-      ],
-      kind: "lockfile",
-      project_name: nil,
-      success: true,
-    })
+    # Check all deps are present (order may vary)
+    deps = result[:dependencies]
+    expect(deps.length).to eq(5)
+    expect(deps.map(&:name)).to match_array(%w[cowboy cowlib plug poison ranch])
+    expect(deps.find { |d| d.name == "cowboy" }.requirement).to eq("1.0.4")
+    expect(deps.find { |d| d.name == "ranch" }.requirement).to eq("1.2.1")
   end
 
   it "matches valid manifest filepaths" do

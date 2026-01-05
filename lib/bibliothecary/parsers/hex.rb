@@ -5,6 +5,11 @@ module Bibliothecary
     class Hex
       include Bibliothecary::Analyser
 
+      # Matches mix.lock entries: "name": {:hex, :name, "version", ...
+      # or "name": {:git, "url", "ref", ...
+      HEX_LOCK_REGEXP = /"([^"]+)":\s*\{:hex,\s*:[^,]+,\s*"([^"]+)"/
+      GIT_LOCK_REGEXP = /"([^"]+)":\s*\{:git,\s*"([^"]+)",\s*"([^"]+)"/
+
       def self.mapping
         {
           match_filename("mix.exs") => {
@@ -23,13 +28,34 @@ module Bibliothecary
       add_multi_parser(Bibliothecary::MultiParsers::Spdx)
 
       def self.parse_mix(file_contents, options: {})
-        source = options.fetch(:filename, 'mix.exs')
-        response = Typhoeus.post("#{Bibliothecary.configuration.mix_parser_host}/", body: file_contents, timeout: 60)
-        raise Bibliothecary::RemoteParsingError.new("Http Error #{response.response_code} when contacting: #{Bibliothecary.configuration.mix_parser_host}/", response.response_code) unless response.success?
-        json = JSON.parse response.body
+        source = options.fetch(:filename, "mix.exs")
+        deps = []
 
-        deps = json.map do |name, version|
-          Bibliothecary::Dependency.new(
+        # Remove comments before parsing
+        content = file_contents.gsub(/#.*$/, "")
+
+        # Match deps in the dependencies list: {:name, "~> version"} or {:name, ">= version"}
+        # Format: {:dep_name, "requirement"} or {:dep_name, "requirement", opts}
+        content.scan(/\{:(\w+),\s*"([^"]+)"/) do |name, requirement|
+          deps << Dependency.new(
+            platform: platform_name,
+            name: name.to_s,
+            requirement: requirement,
+            type: "runtime",
+            source: source
+          )
+        end
+
+        ParserResult.new(dependencies: deps)
+      end
+
+      def self.parse_mix_lock(file_contents, options: {})
+        source = options.fetch(:filename, "mix.lock")
+        deps = []
+
+        # Match hex packages: "name": {:hex, :name, "version", ...
+        file_contents.scan(HEX_LOCK_REGEXP) do |name, version|
+          deps << Dependency.new(
             platform: platform_name,
             name: name,
             requirement: version,
@@ -37,25 +63,19 @@ module Bibliothecary
             source: source
           )
         end
-        Bibliothecary::ParserResult.new(dependencies: deps)
-      end
 
-      def self.parse_mix_lock(file_contents, options: {})
-        source = options.fetch(:filename, 'mix.lock')
-        response = Typhoeus.post("#{Bibliothecary.configuration.mix_parser_host}/lock", body: file_contents, timeout: 60)
-        raise Bibliothecary::RemoteParsingError.new("Http Error #{response.response_code} when contacting: #{Bibliothecary.configuration.mix_parser_host}/", response.response_code) unless response.success?
-        json = JSON.parse response.body
-
-        deps = json.map do |name, info|
-          Bibliothecary::Dependency.new(
+        # Match git packages: "name": {:git, "url", "ref", ...
+        file_contents.scan(GIT_LOCK_REGEXP) do |name, _url, ref|
+          deps << Dependency.new(
             platform: platform_name,
             name: name,
-            requirement: info["version"],
+            requirement: ref,
             type: "runtime",
             source: source
           )
         end
-        Bibliothecary::ParserResult.new(dependencies: deps)
+
+        ParserResult.new(dependencies: deps)
       end
     end
   end
