@@ -22,13 +22,11 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
 
   spec.add_dependency "bundler"
-  spec.add_dependency "commander"
   spec.add_dependency "csv"
   spec.add_dependency "json", "~> 2.8"
-  spec.add_dependency "librariesio-gem-parser"
   spec.add_dependency "ox", ">= 2.8.1"
   spec.add_dependency "packageurl-ruby"
-  spec.add_dependency "racc"
+  spec.add_dependency "racc" # required by tomlrb but not declared as a dependency
   spec.add_dependency "tomlrb", "~> 2.0"
 
   spec.metadata["rubygems_mfa_required"] = "true"

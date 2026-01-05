@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require "bundler"
-require "gemnasium/parser"
 
 module Bibliothecary
   module Parsers
@@ -12,6 +11,14 @@ module Bibliothecary
       NAME_VERSION = '(?! )(.*?)(?: \(([^-]*)(?:-(.*))?\))?'
       NAME_VERSION_4 = /^ {4}#{NAME_VERSION}$/
       BUNDLED_WITH = /BUNDLED WITH/
+
+      # Gemfile patterns
+      GEM_REGEXP = /^\s*gem\s+['"]([^'"]+)['"]\s*(?:,\s*['"]([^'"]+)['"])?/
+      GROUP_START = /^\s*group\s+(.+?)\s+do/
+      BLOCK_END = /^\s*end\s*$/
+
+      # Gemspec pattern - captures type in first group
+      GEMSPEC_DEPENDENCY = /\.add_(development_|runtime_)?dependency\s*\(?\s*['"]([^'"]+)['"]\s*(?:,\s*['"]([^'"]+)['"])?(?:\s*,\s*['"]([^'"]+)['"])?\s*\)?/
 
       def self.mapping
         {
@@ -41,13 +48,8 @@ module Bibliothecary
         source = options.fetch(:filename, nil)
         dependencies = []
 
-        # Process line by line to match gem specs
-        # Gems are at 4 spaces indentation: "    name (version)" or "    name (version-platform)"
         file_contents.each_line do |line|
-          # Normalize line endings
           line = line.chomp.gsub(/\r$/, "")
-
-          # Match exactly 4 spaces followed by gem name and version
           next unless (match = line.match(NAME_VERSION_4))
 
           name, version, _platform = match.captures
@@ -62,7 +64,6 @@ module Bibliothecary
           )
         end
 
-        # Extract bundler version from BUNDLED WITH section
         if (bundler_dep = parse_bundler(file_contents, source))
           dependencies << bundler_dep
         end
@@ -71,15 +72,77 @@ module Bibliothecary
       end
 
       def self.parse_gemfile(file_contents, options: {})
-        manifest = Gemnasium::Parser.send(:gemfile, file_contents)
-        dependencies = parse_ruby_manifest(manifest, platform_name, options.fetch(:filename, nil))
-        ParserResult.new(dependencies: dependencies)
+        source = options.fetch(:filename, nil)
+        deps = []
+        current_type = "runtime"
+        block_depth = 0
+
+        file_contents.each_line do |line|
+          # Track group blocks
+          if (group_match = line.match(GROUP_START))
+            block_depth += 1
+            groups = group_match[1]
+            current_type = groups.include?(":development") ? "development" : "runtime"
+            next
+          end
+
+          if line.match?(BLOCK_END) && block_depth > 0
+            block_depth -= 1
+            current_type = "runtime" if block_depth == 0
+            next
+          end
+
+          # Match gem declarations
+          if (match = line.match(GEM_REGEXP))
+            name = match[1]
+            version = match[2]
+            requirement = version ? "= #{version}" : ">= 0"
+
+            deps << Dependency.new(
+              platform: platform_name,
+              name: name,
+              requirement: requirement,
+              type: current_type,
+              source: source
+            )
+          end
+        end
+
+        ParserResult.new(dependencies: deps)
       end
 
       def self.parse_gemspec(file_contents, options: {})
-        manifest = Gemnasium::Parser.send(:gemspec, file_contents)
-        dependencies = parse_ruby_manifest(manifest, platform_name, options.fetch(:filename, nil))
-        ParserResult.new(dependencies: dependencies)
+        source = options.fetch(:filename, nil)
+        deps = []
+
+        file_contents.each_line do |line|
+          match = line.match(GEMSPEC_DEPENDENCY)
+          next unless match
+
+          type_prefix, name, ver1, ver2 = match.captures
+          type = type_prefix == "development_" ? "development" : "runtime"
+          requirement = build_requirement(ver1, ver2)
+
+          deps << Dependency.new(
+            platform: platform_name,
+            name: name,
+            requirement: requirement,
+            type: type,
+            source: source
+          )
+        end
+
+        ParserResult.new(dependencies: deps)
+      end
+
+      def self.build_requirement(ver1, ver2)
+        if ver1 && ver2
+          "#{ver1}, #{ver2}"
+        elsif ver1
+          ver1
+        else
+          ">= 0"
+        end
       end
 
       def self.parse_bundler(file_contents, source = nil)
