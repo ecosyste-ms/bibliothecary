@@ -13,6 +13,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 
+## [15.0.1]
+
+### Changed
+
+- Fixed Gemfile parser incorrectly prepending "=" to version requirements that already have operators (e.g., `~> 7.0` was becoming `= ~> 7.0`)
+
 ## [15.0.0]
 
 ### Added
