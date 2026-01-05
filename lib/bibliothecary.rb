@@ -9,7 +9,6 @@ require "bibliothecary/runner"
 require "bibliothecary/exceptions"
 require "bibliothecary/file_info"
 require "bibliothecary/related_files_info"
-require "bibliothecary/purl_util"
 require "find"
 require "tomlrb"
 

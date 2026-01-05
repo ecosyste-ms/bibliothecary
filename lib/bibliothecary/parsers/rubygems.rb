@@ -6,7 +6,6 @@ module Bibliothecary
   module Parsers
     class Rubygems
       include Bibliothecary::Analyser
-      extend Bibliothecary::MultiParsers::BundlerLikeManifest
 
       NAME_VERSION = '(?! )(.*?)(?: \(([^-]*)(?:-(.*))?\))?'
       NAME_VERSION_4 = /^ {4}#{NAME_VERSION}$/
@@ -40,9 +39,7 @@ module Bibliothecary
         }
       end
 
-      add_multi_parser(Bibliothecary::MultiParsers::CycloneDX)
       add_multi_parser(Bibliothecary::MultiParsers::DependenciesCSV)
-      add_multi_parser(Bibliothecary::MultiParsers::Spdx)
 
       def self.parse_gemfile_lock(file_contents, options: {})
         source = options.fetch(:filename, nil)

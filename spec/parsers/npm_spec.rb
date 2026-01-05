@@ -7,7 +7,6 @@ describe Bibliothecary::Parsers::NPM do
     expect(described_class.platform_name).to eq("npm")
   end
 
-  it_behaves_like "CycloneDX"
 
   it "doesn't group dependencies.csv with other files" do
     result = Bibliothecary.find_manifests_from_paths([

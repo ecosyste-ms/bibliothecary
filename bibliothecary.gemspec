@@ -25,7 +25,6 @@ Gem::Specification.new do |spec|
   spec.add_dependency "csv"
   spec.add_dependency "json", "~> 2.8"
   spec.add_dependency "ox", ">= 2.8.1"
-  spec.add_dependency "packageurl-ruby"
   spec.add_dependency "racc" # required by tomlrb but not declared as a dependency
   spec.add_dependency "tomlrb", "~> 2.0"
 

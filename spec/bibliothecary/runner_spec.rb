@@ -15,29 +15,6 @@ def maven_file_info(filename)
 end
 
 describe Bibliothecary::Runner do
-  describe "analyze_file" do
-    let!(:runner) { Bibliothecary::Runner.new(Bibliothecary::Configuration.new) }
-    it "should analyze a multi-parser file" do
-      result = runner.analyze_file("sbom.spdx.json", load_fixture("sbom.spdx.json"))
-
-      expect(result.map { |r| [r[:platform], r[:dependencies].size] }).to eq([
-        ["cargo", 0],
-        ["conda", 0],
-        ["cran", 0],
-        ["go", 1],
-        ["hackage", 0],
-        ["hex", 0],
-        ["maven", 0],
-        ["npm", 0],
-        ["nuget", 0],
-        ["packagist", 0],
-        ["pypi", 0],
-        ["rubygems", 0],
-        ["swiftpm", 0],
-      ])
-    end
-  end
-
   describe Bibliothecary::Runner::MultiManifestFilter do
     let(:subject) { described_class.new(path: path, related_files_info_entries: related_files_info_entries, runner: runner) }
 
@@ -45,10 +22,6 @@ describe Bibliothecary::Runner do
     let(:related_files_info_entries) do
       Bibliothecary::RelatedFilesInfo.create_from_file_infos(
         [
-          # there's no PyPI in this file so it should get filtered out
-          file_info("cyclonedx.xml", Bibliothecary::Parsers::Pypi),
-          # this file does have Maven
-          maven_file_info("cyclonedx.xml"),
           file_info("Gemfile.lock", Bibliothecary::Parsers::Rubygems),
           file_info("package.json", Bibliothecary::Parsers::NPM),
         ]
@@ -58,7 +31,7 @@ describe Bibliothecary::Runner do
 
     describe "#files_to_check" do
       it "should produce counts" do
-        expect(subject.files_to_check).to eq("cyclonedx.xml" => 2, "Gemfile.lock" => 1)
+        expect(subject.files_to_check).to eq("Gemfile.lock" => 1)
       end
     end
 
@@ -75,15 +48,6 @@ describe Bibliothecary::Runner do
         subject.partition_file_entries!
         expect(subject.single_file_results.count).to eq(1)
         expect(subject.single_file_results.first.lockfiles).to eq(["Gemfile.lock"])
-      end
-    end
-
-    describe "#multiple_file_results" do
-      it "should produce multiple file results" do
-        subject.partition_file_entries!
-
-        expect(subject.multiple_file_results.count).to eq(1)
-        expect(subject.multiple_file_results.first.platform).to eq("maven")
       end
     end
 

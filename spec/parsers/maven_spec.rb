@@ -10,7 +10,6 @@ RSpec.describe Bibliothecary::Parsers::Maven do
     expect(cdata).to match("this is some CDATA")
   end
 
-  it_behaves_like "CycloneDX"
   it_behaves_like "dependencies.csv"
 
   it "parses dependencies from pom.xml" do
