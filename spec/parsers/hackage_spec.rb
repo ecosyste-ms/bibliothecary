@@ -27,31 +27,7 @@ describe Bibliothecary::Parsers::Hackage do
     expect(described_class.match?("test")).to be_falsey
   end
 
-  it "parses dependencies from *.cabal files", :vcr do
-    stub_request(:post, "http://cabal.libraries.io/parse").
-      with(
-        body: load_fixture("example.cabal"),
-        headers: {'Content-Type'=>'text/plain;charset=utf-8', 'Expect'=>'', 'User-Agent'=>'Typhoeus - https://github.com/typhoeus/typhoeus'}).
-      to_return(status: 200, body: JSON.generate([
-        {name: "aeson", requirement: "==1.1.*", type: "runtime"},
-        {name: "base", requirement: ">=4.9 && <4.11", type: "runtime"},
-        {name: "Cabal", requirement: "==2.0.*", type: "runtime"},
-        {name: "envy", requirement: "==1.3.*", type: "runtime"},
-        {name: "pretty", requirement: "==1.1.*", type: "runtime"},
-        {name: "servant-server", requirement: "==0.11.*", type: "runtime"},
-        {name: "text", requirement: "==1.2.*", type: "runtime"},
-        {name: "utf8-string", requirement: "==1.0.*", type: "runtime"},
-        {name: "warp", requirement: "==3.2.*", type: "runtime"},
-        {name: "hspec-discover", requirement: "==2.4.*", type: "build"},
-        {name: "aeson", requirement: "==1.1.*", type: "test"},
-        {name: "base", requirement: ">=4.9 && <4.11", type: "test"},
-        {name: "bytestring", requirement: "==0.10.*", type: "test"},
-        {name: "Cabal", requirement: "==2.0.*", type: "test"},
-        {name: "hspec", requirement: "==2.4.*", type: "test"},
-        {name: "pretty", requirement: "==1.1.*", type: "test"},
-        {name: "text", requirement: "==1.2.*", type: "test"}
-      ]), headers: {})
-
+  it "parses dependencies from *.cabal files" do
     expect(described_class.analyse_contents("example.cabal", load_fixture("example.cabal"))).to eq({
       platform: "hackage",
       path: "example.cabal",
