@@ -43,7 +43,6 @@ module Bibliothecary
         }
       end
 
-      add_multi_parser(Bibliothecary::MultiParsers::DependenciesCSV)
 
       def self.parse_package_lock(file_contents, options: {})
         manifest = JSON.parse(file_contents)

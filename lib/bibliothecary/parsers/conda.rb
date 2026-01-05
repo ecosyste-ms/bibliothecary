@@ -20,7 +20,6 @@ module Bibliothecary
         }
       end
 
-      add_multi_parser(Bibliothecary::MultiParsers::DependenciesCSV)
 
       def self.parse_conda(file_contents, options: {})
         manifest = YAML.load(file_contents)

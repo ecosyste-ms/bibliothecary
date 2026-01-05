@@ -6,18 +6,29 @@ module Bibliothecary
   module Parsers
     class Haxelib
       include Bibliothecary::Analyser
-      extend Bibliothecary::MultiParsers::JSONRuntime
 
       def self.mapping
         {
           match_filename("haxelib.json") => {
             kind: "manifest",
-            parser: :parse_json_runtime_manifest,
+            parser: :parse_manifest,
           },
         }
       end
 
-      add_multi_parser(Bibliothecary::MultiParsers::DependenciesCSV)
+      def self.parse_manifest(file_contents, options: {})
+        manifest = JSON.parse(file_contents)
+        dependencies = manifest.fetch("dependencies", {}).map do |name, requirement|
+          Dependency.new(
+            name: name,
+            requirement: requirement,
+            type: "runtime",
+            source: options.fetch(:filename, nil),
+            platform: platform_name
+          )
+        end
+        ParserResult.new(dependencies: dependencies)
+      end
     end
   end
 end

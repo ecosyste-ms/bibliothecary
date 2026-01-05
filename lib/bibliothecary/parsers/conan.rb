@@ -22,7 +22,6 @@ module Bibliothecary
         }
       end
 
-      add_multi_parser(Bibliothecary::MultiParsers::DependenciesCSV)
 
       REQUIRES_PATTERN = /self\.requires\(\s*["']([^"']+)["']/
 

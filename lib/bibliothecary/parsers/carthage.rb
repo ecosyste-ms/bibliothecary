@@ -32,7 +32,6 @@ module Bibliothecary
         }
       end
 
-      add_multi_parser(Bibliothecary::MultiParsers::DependenciesCSV)
 
       def self.parse_cartfile(file_contents, options: {})
         parse_cartfile_contents(file_contents, options.fetch(:filename, "Cartfile"), "runtime")

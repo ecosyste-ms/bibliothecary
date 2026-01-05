@@ -7,13 +7,12 @@ module Bibliothecary
   module Parsers
     class Nuget
       include Bibliothecary::Analyser
-      extend Bibliothecary::MultiParsers::JSONRuntime
 
       def self.mapping
         {
           match_filename("Project.json") => {
             kind: "manifest",
-            parser: :parse_json_runtime_manifest,
+            parser: :parse_project_json,
           },
           match_filename("Project.lock.json") => {
             kind: "lockfile",
@@ -46,7 +45,19 @@ module Bibliothecary
         }
       end
 
-      add_multi_parser(Bibliothecary::MultiParsers::DependenciesCSV)
+      def self.parse_project_json(file_contents, options: {})
+        manifest = JSON.parse(file_contents)
+        dependencies = manifest.fetch("dependencies", {}).map do |name, requirement|
+          Dependency.new(
+            name: name,
+            requirement: requirement,
+            type: "runtime",
+            source: options.fetch(:filename, nil),
+            platform: platform_name
+          )
+        end
+        ParserResult.new(dependencies: dependencies)
+      end
 
       def self.parse_project_lock_json(file_contents, options: {})
         manifest = JSON.parse file_contents

@@ -16,9 +16,11 @@ Gem::Specification.new do |spec|
   spec.homepage      = "https://github.com/ecosyste-ms/bibliothecary"
   spec.license       = "AGPL-3.0"
 
-  spec.files         = `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(test|spec|features)/}) }
+  spec.files         = `git ls-files -z`.split("\x0").reject do |f|
+    f.match(%r{^(test|spec|features|\.github)/|^bin/(benchmark|console|setup)|^\.|^(Gemfile|Rakefile|CODE_OF_CONDUCT)})
+  end
   spec.bindir        = "bin"
-  spec.executables   = spec.files.grep(%r{^bin/}) { |f| File.basename(f) }
+  spec.executables   = %w[bibliothecary]
   spec.require_paths = ["lib"]
 
   spec.add_dependency "bundler"

@@ -7,31 +7,6 @@ describe Bibliothecary::Parsers::NPM do
     expect(described_class.platform_name).to eq("npm")
   end
 
-
-  it "doesn't group dependencies.csv with other files" do
-    result = Bibliothecary.find_manifests_from_paths([
-        "spec/fixtures/package.json",
-        "spec/fixtures/package-lock.json",
-        "spec/fixtures/dependencies.csv",
-    ]).find_all { |r| r.platform == "npm" }
-
-    expect(result.length).to eq(2)
-
-    expect(
-      result.find do |r|
-        r.manifests == ["spec/fixtures/package.json"] &&
-        r.lockfiles == ["spec/fixtures/package-lock.json"]
-      end
-    ).not_to eq(nil)
-
-    expect(
-      result.find do |r|
-        r.manifests == [] &&
-        r.lockfiles == ["spec/fixtures/dependencies.csv"]
-      end
-    ).not_to eq(nil)
-  end
-
   it "parses dependencies from npm-ls.json" do
     expect(described_class.analyse_contents("npm-ls.json", load_fixture("npm-ls.json"))).to eq({
                                                                                                  platform: "npm",

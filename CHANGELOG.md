@@ -11,11 +11,30 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Optimized Maven text parsers: lazy ANSI stripping (only when escape sequences present), skip newline normalization when not needed, and reduced per-line regex overhead in gradle-dependencies-q.txt parser. Results in 10-20% faster parsing.
-- Optimized yarn.lock v1 parser with lazy newline normalization (16% faster).
-- Optimized requirements.txt parser with each_line iteration and cached source lookup (10% faster).
+### Removed
+
+## [15.0.0]
+
+### Added
+
+- Conan parser: conanfile.py, conanfile.txt, conan.lock
+- vcpkg lockfile support: _generated-vcpkg-list.json
+- vcpkg improvements: overrides support, dev dependency detection (host: true)
+
+### Changed
+
+- NuGet packages.lock.json now returns dependencies from all target frameworks instead of arbitrarily picking one
+- Optimized Maven text parsers: lazy ANSI stripping, skip newline normalization when not needed (10-20% faster)
+- Optimized yarn.lock v1 parser with lazy newline normalization (16% faster)
+- Optimized requirements.txt parser with each_line iteration and cached source lookup (10% faster)
 
 ### Removed
+
+- SPDX parser and support for *.spdx, *.spdx.json files
+- CycloneDX parser and support for cyclonedx.xml, cyclonedx.json, *.cdx.xml, *.cdx.json files
+- DependenciesCSV multi_parser and support for dependencies.csv files
+- packageurl-ruby dependency
+- Multi-parser infrastructure (add_multi_parser, MultiManifestFilter)
 
 ## [14.4.0]
 

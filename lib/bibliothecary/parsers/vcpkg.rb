@@ -16,7 +16,6 @@ module Bibliothecary
         }
       end
 
-      add_multi_parser(Bibliothecary::MultiParsers::DependenciesCSV)
 
       def self.parse_vcpkg_json(file_contents, options: {})
         source = options.fetch(:filename, nil)

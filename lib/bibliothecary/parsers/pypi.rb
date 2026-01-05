@@ -88,7 +88,6 @@ module Bibliothecary
         }
       end
 
-      add_multi_parser(Bibliothecary::MultiParsers::DependenciesCSV)
 
       def self.parser_pylock(file_contents, options: {})
         dependencies = []
