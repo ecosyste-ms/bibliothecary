@@ -414,12 +414,12 @@ describe Bibliothecary do
 
   it "allows resetting of config options" do
     Bibliothecary.configure do |config|
-      config.carthage_parser_host = "http://foobar.com"
+      config.ignored_dirs = ["custom_dir"]
     end
 
     Bibliothecary.reset
 
-    expect(Bibliothecary.configuration.carthage_parser_host).to eq("https://carthage.libraries.io")
+    expect(Bibliothecary.configuration.ignored_dirs).to eq([".git", "node_modules", "bower_components", "vendor", "dist"])
   end
 
   it "properly ignores directories based on ignored_dirs" do

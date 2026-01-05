@@ -32,7 +32,6 @@ Gem::Specification.new do |spec|
   spec.add_dependency "racc"
   spec.add_dependency "sdl4r"
   spec.add_dependency "tomlrb", "~> 2.0"
-  spec.add_dependency "typhoeus"
 
   spec.metadata["rubygems_mfa_required"] = "true"
 end
