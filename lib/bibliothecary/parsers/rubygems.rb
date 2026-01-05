@@ -92,7 +92,13 @@ module Bibliothecary
           if (match = line.match(GEM_REGEXP))
             name = match[1]
             version = match[2]
-            requirement = version ? "= #{version}" : ">= 0"
+            requirement = if version.nil?
+                            ">= 0"
+                          elsif version.match?(/\A\s*[<>=!~]/)
+                            version
+                          else
+                            "= #{version}"
+                          end
 
             deps << Dependency.new(
               platform: platform_name,
