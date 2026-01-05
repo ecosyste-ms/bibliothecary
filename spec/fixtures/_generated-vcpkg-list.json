@@ -1,0 +1,12 @@
+{
+  "boost-system:x64-linux": {
+    "package_name": "boost-system",
+    "version": "1.76.0",
+    "port_version": 0
+  },
+  "zlib:x64-linux": {
+    "package_name": "zlib",
+    "version": "1.2.11",
+    "port_version": 9
+  }
+}

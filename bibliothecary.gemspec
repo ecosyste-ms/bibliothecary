@@ -16,23 +16,19 @@ Gem::Specification.new do |spec|
   spec.homepage      = "https://github.com/ecosyste-ms/bibliothecary"
   spec.license       = "AGPL-3.0"
 
-  spec.files         = `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(test|spec|features)/}) }
+  spec.files         = `git ls-files -z`.split("\x0").reject do |f|
+    f.match(%r{^(test|spec|features|\.github)/|^bin/(benchmark|console|setup)|^\.|^(Gemfile|Rakefile|CODE_OF_CONDUCT)})
+  end
   spec.bindir        = "bin"
-  spec.executables   = spec.files.grep(%r{^bin/}) { |f| File.basename(f) }
+  spec.executables   = %w[bibliothecary]
   spec.require_paths = ["lib"]
 
   spec.add_dependency "bundler"
-  spec.add_dependency "commander"
   spec.add_dependency "csv"
-  spec.add_dependency "deb_control"
   spec.add_dependency "json", "~> 2.8"
-  spec.add_dependency "librariesio-gem-parser"
   spec.add_dependency "ox", ">= 2.8.1"
-  spec.add_dependency "packageurl-ruby"
-  spec.add_dependency "racc"
-  spec.add_dependency "sdl4r"
+  spec.add_dependency "racc" # required by tomlrb but not declared as a dependency
   spec.add_dependency "tomlrb", "~> 2.0"
-  spec.add_dependency "typhoeus"
 
   spec.metadata["rubygems_mfa_required"] = "true"
 end

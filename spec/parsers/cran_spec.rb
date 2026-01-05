@@ -59,7 +59,7 @@ describe Bibliothecary::Parsers::CRAN do
         Bibliothecary::Dependency.new(platform: "cran", name: "plyr", requirement: "*", type: "suggests", source: "DESCRIPTION"),
         Bibliothecary::Dependency.new(platform: "cran", name: "reshape", requirement: "*", type: "suggests", source: "DESCRIPTION"),
         Bibliothecary::Dependency.new(platform: "cran", name: "reshape2", requirement: "*", type: "suggests", source: "DESCRIPTION"),
-        Bibliothecary::Dependency.new(platform: "cran", name: "testthat", requirement: ">=0.4", type: "suggests", source: "DESCRIPTION"),
+        Bibliothecary::Dependency.new(platform: "cran", name: "testthat", requirement: ">= 0.4", type: "suggests", source: "DESCRIPTION"),
         Bibliothecary::Dependency.new(platform: "cran", name: "hexbin", requirement: "*", type: "suggests", source: "DESCRIPTION"),
         Bibliothecary::Dependency.new(platform: "cran", name: "fastmatch", requirement: "*", type: "suggests", source: "DESCRIPTION"),
         Bibliothecary::Dependency.new(platform: "cran", name: "nlme", requirement: "*", type: "suggests", source: "DESCRIPTION"),

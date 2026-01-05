@@ -13,6 +13,38 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 
+## [15.0.0]
+
+### Added
+
+- Conan parser: conanfile.py, conanfile.txt, conan.lock
+- vcpkg lockfile support: _generated-vcpkg-list.json
+- vcpkg improvements: overrides support, dev dependency detection (host: true)
+
+### Changed
+
+- NuGet packages.lock.json now returns dependencies from all target frameworks instead of arbitrarily picking one
+- Optimized Maven text parsers: lazy ANSI stripping, skip newline normalization when not needed (10-20% faster)
+- Optimized yarn.lock v1 parser with lazy newline normalization (16% faster)
+- Optimized requirements.txt parser with each_line iteration and cached source lookup (10% faster)
+
+### Removed
+
+- SPDX parser and support for *.spdx, *.spdx.json files
+- CycloneDX parser and support for cyclonedx.xml, cyclonedx.json, *.cdx.xml, *.cdx.json files
+- DependenciesCSV multi_parser and support for dependencies.csv files
+- packageurl-ruby dependency
+- Multi-parser infrastructure (add_multi_parser, MultiManifestFilter)
+
+## [14.4.0]
+
+### Changed
+
+- Switched Cargo.lock, poetry.lock, uv.lock, Gopkg.lock, and pylock.toml parsers from full TOML parsing to regex-based parsing for 50-250x faster lockfile parsing on these formats.
+- Switched Gemfile.lock parser from Bundler::LockfileParser to regex-based parsing for 6x faster parsing.
+- Switched Podfile.lock parser from YAML to regex-based parsing for 5x faster parsing.
+- Switched yarn.lock v2+ parser from YAML to regex-based parsing for 14x faster parsing.
+
 ## [14.3.0]
 
 ### Added

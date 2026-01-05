@@ -38,18 +38,6 @@ module Bibliothecary
       base.extend(Bibliothecary::Analyser::Analysis)
     end
 
-    module TryCache
-      def try_cache(options, key)
-        if options[:cache]
-          options[:cache][key] ||= yield
-
-          options[:cache][key]
-        else
-          yield
-        end
-      end
-    end
-
     module ClassMethods
       def platform_name
         @platform_name ||= name.to_s.split("::").last.downcase.freeze
@@ -65,25 +53,6 @@ module Bibliothecary
             source: source
           )
         end
-      end
-
-      # Add a MultiParser module to a Parser class. This extends the
-      # self.mapping method on the parser to include the multi parser's
-      # files to watch for, and it extends the Parser class with
-      # the multi parser for you.
-      #
-      # @param klass [Class] A Bibliothecary::MultiParsers class
-      def add_multi_parser(klass)
-        raise "No mapping found! You should place the add_multi_parser call below def self.mapping." unless respond_to?(:mapping)
-
-        original_mapping = mapping
-
-        singleton_class.remove_method(:mapping)
-        define_singleton_method(:mapping) do
-          original_mapping.merge(klass.mapping)
-        end
-
-        send(:extend, klass)
       end
     end
   end

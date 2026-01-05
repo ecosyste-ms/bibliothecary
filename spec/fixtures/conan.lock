@@ -1,0 +1,10 @@
+{
+  "version": "0.5",
+  "requires": [
+    "zlib/1.2.11#abc123",
+    "boost/1.76.0#def456"
+  ],
+  "build_requires": [
+    "cmake/3.21.0#789xyz"
+  ]
+}

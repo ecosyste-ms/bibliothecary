@@ -15,8 +15,6 @@ module Bibliothecary
         }
       end
 
-      add_multi_parser(Bibliothecary::MultiParsers::CycloneDX)
-      add_multi_parser(Bibliothecary::MultiParsers::DependenciesCSV)
 
       def self.parse_modelfile(file_contents, options: {})
         source = options.fetch(:filename, 'Modelfile')

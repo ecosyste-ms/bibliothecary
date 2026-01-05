@@ -4,8 +4,6 @@ Dependency manifest parsing library for https://github.com/ecosyste-ms
 
 This is a maintained fork of the original [Bibliothecary](https://github.com/librariesio/bibliothecary) gem, with support for additional manifest formats and bug fixes.
 
-[![license](https://img.shields.io/github/license/ecosyste-ms/bibliothecary.svg)](https://github.com/ecosyste-ms/bibliothecary/blob/master/LICENSE.txt)
-
 ## Installation
 
 Requires Ruby 3.4 or above.
@@ -18,7 +16,9 @@ gem "ecosystems-bibliothecary", git: "https://github.com/ecosyste-ms/bibliotheca
 
 And then execute:
 
-    $ bundle install
+```shell
+bundle install
+```
 
 ## Usage
 
@@ -38,14 +38,6 @@ Search a directory for manifest files and parse the contents:
 
 ```ruby
 Bibliothecary.analyse('./')
-```
-
-There are a number of parsers that rely on web services to parse the file formats, those urls can be configured like so:
-
-```ruby
-Bibliothecary.configure do |config|
-  config.carthage_parser_host = 'http://my-carthage-parsing-service.com'
-end
 ```
 
 All available config options are in: https://github.com/ecosyste-ms/bibliothecary/blob/master/lib/bibliothecary/configuration.rb
@@ -103,18 +95,6 @@ All available config options are in: https://github.com/ecosyste-ms/bibliothecar
   - paket.lock
   - *.csproj
   - project.assets.json
-- CycloneDX
-  - cyclonedx.xml
-  - cyclonedx.json
-  - *.cdx.xml
-  - *.cdx.json
-  - Note that CycloneDX manifests can contain information on multiple
-    package manager's packages!
-- SPDX
-  - tag:value as *.spdx
-  - JSON as *.spdx.json
-  - Note that SPDX manifests can contain information on multiple
-    package manager's packages!
 - Bower
   - bower.json
 - BentoML
@@ -134,6 +114,10 @@ All available config options are in: https://github.com/ecosyste-ms/bibliothecar
   - project.clj
 - Cog
   - cog.yaml
+- Conan
+  - conanfile.py
+  - conanfile.txt
+  - conan.lock
 - Meteor
   - versions.json
 - MLflow
@@ -198,6 +182,7 @@ All available config options are in: https://github.com/ecosyste-ms/bibliothecar
   - dvc.yaml
 - Vcpkg
   - vcpkg.json
+  - _generated-vcpkg-list.json
 - Homebrew
   - Brewfile
   - Brewfile.lock.json
