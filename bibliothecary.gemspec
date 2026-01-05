@@ -30,7 +30,6 @@ Gem::Specification.new do |spec|
   spec.add_dependency "ox", ">= 2.8.1"
   spec.add_dependency "packageurl-ruby"
   spec.add_dependency "racc"
-  spec.add_dependency "sdl4r"
   spec.add_dependency "tomlrb", "~> 2.0"
 
   spec.metadata["rubygems_mfa_required"] = "true"

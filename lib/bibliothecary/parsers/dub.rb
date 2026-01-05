@@ -1,13 +1,15 @@
 # frozen_string_literal: true
 
 require "json"
-require "sdl_parser"
 
 module Bibliothecary
   module Parsers
     class Dub
       include Bibliothecary::Analyser
       extend Bibliothecary::MultiParsers::JSONRuntime
+
+      # Matches: dependency "name" version="~>1.0"
+      SDL_DEPENDENCY_REGEXP = /^dependency\s+"([^"]+)"(?:\s+version="([^"]+)")?/
 
       def self.mapping
         {
@@ -26,9 +28,23 @@ module Bibliothecary
       add_multi_parser(Bibliothecary::MultiParsers::DependenciesCSV)
 
       def self.parse_sdl_manifest(file_contents, options: {})
-        ParserResult.new(
-          dependencies: SdlParser.new(:runtime, file_contents, platform_name, options.fetch(:filename, nil)).dependencies
-        )
+        source = options.fetch(:filename, nil)
+        deps = []
+
+        file_contents.each_line do |line|
+          match = line.match(SDL_DEPENDENCY_REGEXP)
+          next unless match
+
+          deps << Dependency.new(
+            platform: platform_name,
+            name: match[1],
+            requirement: match[2] || ">= 0",
+            type: :runtime,
+            source: source
+          )
+        end
+
+        ParserResult.new(dependencies: deps.uniq)
       end
     end
   end
