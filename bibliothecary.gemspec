@@ -24,7 +24,6 @@ Gem::Specification.new do |spec|
   spec.add_dependency "bundler"
   spec.add_dependency "commander"
   spec.add_dependency "csv"
-  spec.add_dependency "deb_control"
   spec.add_dependency "json", "~> 2.8"
   spec.add_dependency "librariesio-gem-parser"
   spec.add_dependency "ox", ">= 2.8.1"

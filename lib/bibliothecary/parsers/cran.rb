@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require "deb_control"
-
 module Bibliothecary
   module Parsers
     class CRAN
@@ -23,28 +21,54 @@ module Bibliothecary
       add_multi_parser(Bibliothecary::MultiParsers::Spdx)
 
       def self.parse_description(file_contents, options: {})
-        manifest = DebControl::ControlFileBase.parse(file_contents)
-        dependencies = parse_section(manifest, "Depends", options.fetch(:filename, nil)) +
-                       parse_section(manifest, "Imports", options.fetch(:filename, nil)) +
-                       parse_section(manifest, "Suggests", options.fetch(:filename, nil)) +
-                       parse_section(manifest, "Enhances", options.fetch(:filename, nil))
+        source = options.fetch(:filename, nil)
+        fields = parse_rfc822(file_contents)
+
+        dependencies = parse_deps(fields["Depends"], "depends", source) +
+                       parse_deps(fields["Imports"], "imports", source) +
+                       parse_deps(fields["Suggests"], "suggests", source) +
+                       parse_deps(fields["Enhances"], "enhances", source)
+
         ParserResult.new(dependencies: dependencies)
       end
 
-      def self.parse_section(manifest, name, source = nil)
-        return [] unless manifest.first[name]
+      def self.parse_rfc822(contents)
+        fields = {}
+        current_field = nil
 
-        deps = manifest.first[name].delete("\n").split(",").map(&:strip)
-        deps.map do |dependency|
-          dep = dependency.match(REQUIRE_REGEXP)
+        contents.each_line do |line|
+          if line =~ /^([A-Za-z][A-Za-z0-9-]*):\s*(.*)/
+            current_field = $1
+            fields[current_field] = $2.strip
+          elsif line =~ /^\s+(.*)/ && current_field
+            # Continuation line
+            fields[current_field] += " " + $1.strip
+          end
+        end
+
+        fields
+      end
+
+      def self.parse_deps(value, type, source)
+        return [] unless value
+
+        value.split(",").map(&:strip).map do |dep_str|
+          next if dep_str.empty?
+
+          match = dep_str.match(REQUIRE_REGEXP)
+          next unless match
+
+          # Normalize whitespace: collapse multiple spaces, but preserve single space after operator
+          requirement = match[2]&.gsub(/\s+/, " ")&.strip || "*"
+
           Dependency.new(
-            name: dep[1],
-            requirement: dep[2],
-            type: name.downcase,
+            name: match[1],
+            requirement: requirement,
+            type: type,
             source: source,
             platform: platform_name
           )
-        end
+        end.compact
       end
     end
   end

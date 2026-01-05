@@ -1,5 +1,4 @@
 require "json"
-require "deb_control"
 
 module Bibliothecary
   module Parsers
@@ -139,11 +138,30 @@ module Bibliothecary
 
       def self.parse_cabal_config(file_contents, options: {})
         source = options.fetch(:filename, "cabal.config")
-        manifest = DebControl::ControlFileBase.parse(file_contents)
-        deps_raw = manifest.first["constraints"].delete("\n").split(",").map(&:strip)
-        deps = deps_raw.map do |dependency|
-          dep = dependency.delete("==").split(" ")
-          Dependency.new(
+        deps = []
+
+        # Parse RFC822-style format: constraints: pkg1 ==1.0, pkg2 ==2.0, ...
+        # Values can span multiple lines (continuation lines start with whitespace)
+        constraints = nil
+        file_contents.each_line do |line|
+          if line =~ /^constraints:\s*(.*)/i
+            constraints = $1.strip
+          elsif line =~ /^\s+(.*)/ && constraints
+            constraints += " " + $1.strip
+          elsif line =~ /^[a-z]/i && constraints
+            break
+          end
+        end
+
+        return ParserResult.new(dependencies: []) unless constraints
+
+        constraints.split(",").each do |dep_str|
+          dep_str = dep_str.strip
+          next if dep_str.empty?
+
+          # Format: package ==version or package ==version.*
+          dep = dep_str.delete("==").split(/\s+/)
+          deps << Dependency.new(
             platform: platform_name,
             name: dep[0],
             requirement: dep[1] || "*",
@@ -151,6 +169,7 @@ module Bibliothecary
             source: source
           )
         end
+
         ParserResult.new(dependencies: deps)
       end
     end
