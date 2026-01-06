@@ -34,6 +34,7 @@ describe Bibliothecary do
           Bibliothecary::Parsers::Maven,
           Bibliothecary::Parsers::Meteor,
           Bibliothecary::Parsers::MLflow,
+          Bibliothecary::Parsers::Nimble,
           Bibliothecary::Parsers::NPM,
           Bibliothecary::Parsers::Nuget,
           Bibliothecary::Parsers::Ollama,
