@@ -660,4 +660,23 @@ describe Bibliothecary::Parsers::Pypi do
       success: true
     })
   end
+
+  it "parses dependencies from pdm.lock" do
+    expect(described_class.analyse_contents("pdm.lock", load_fixture("pdm.lock"))).to eq({
+      platform: "pypi",
+      path: "pdm.lock",
+      project_name: nil,
+      dependencies: [
+        Bibliothecary::Dependency.new(platform: "pypi", name: "certifi", requirement: "2024.2.2", type: "runtime", source: "pdm.lock"),
+        Bibliothecary::Dependency.new(platform: "pypi", name: "requests", requirement: "2.31.0", type: "runtime", source: "pdm.lock"),
+        Bibliothecary::Dependency.new(platform: "pypi", name: "pytest", requirement: "8.0.0", type: "develop", source: "pdm.lock"),
+      ],
+      kind: "lockfile",
+      success: true
+    })
+  end
+
+  it "matches pdm.lock filepath" do
+    expect(described_class.match?("pdm.lock")).to be_truthy
+  end
 end

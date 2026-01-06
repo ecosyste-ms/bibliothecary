@@ -85,6 +85,10 @@ module Bibliothecary
             kind: "lockfile",
             parser: :parser_pylock,
           },
+          match_filename("pdm.lock") => {
+            kind: "lockfile",
+            parser: :parse_pdm_lock,
+          },
         }
       end
 
@@ -123,6 +127,34 @@ module Bibliothecary
             name: name,
             requirement: version,
             type: "runtime", # All dependencies are considered runtime
+            source: source
+          )
+        end
+        ParserResult.new(dependencies: dependencies)
+      end
+
+      def self.parse_pdm_lock(file_contents, options: {})
+        source = options.fetch(:filename, nil)
+        dependencies = []
+        # Split into [[package]] blocks and extract fields from each
+        file_contents.split(/\[\[package\]\]/).drop(1).each do |block|
+          name = block[/^name\s*=\s*"([^"]+)"/m, 1]
+          version = block[/^version\s*=\s*"([^"]+)"/m, 1]
+          # PDM stores groups as an array, e.g. groups = ["default"] or groups = ["dev"]
+          groups_match = block[/^groups\s*=\s*\[([^\]]+)\]/m, 1]
+          groups = groups_match ? groups_match.scan(/"([^"]+)"/).flatten : ["default"]
+
+          type = if groups.include?("dev")
+                   "develop"
+                 else
+                   "runtime"
+                 end
+
+          dependencies << Dependency.new(
+            platform: platform_name,
+            name: name,
+            requirement: version,
+            type: type,
             source: source
           )
         end
