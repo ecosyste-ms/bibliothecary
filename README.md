@@ -193,6 +193,8 @@ All available config options are in: https://github.com/ecosyste-ms/bibliothecar
   - Brewfile.lock.json
 - Ollama
   - Modelfile
+- Nimble
+  - \*.nimble
 
 ## Development
 
