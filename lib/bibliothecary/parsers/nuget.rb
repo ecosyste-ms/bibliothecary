@@ -42,6 +42,11 @@ module Bibliothecary
             kind: "lockfile",
             parser: :parse_project_assets_json,
           },
+          # .deps.json files end with .deps.json (e.g. myapp.deps.json)
+          match_extension(".deps.json") => {
+            kind: "lockfile",
+            parser: :parse_deps_json,
+          },
         }
       end
 
@@ -245,6 +250,33 @@ module Bibliothecary
           return ParserResult.new(dependencies: frameworks[frameworks.keys.max]) unless frameworks.empty?
         end
         ParserResult.new(dependencies: [])
+      end
+
+      def self.parse_deps_json(file_contents, options: {})
+        manifest = JSON.parse(file_contents)
+        libraries = manifest.fetch("libraries", {})
+
+        dependencies = libraries.map do |name_version, details|
+          # Skip project-type entries (these are the root/main package)
+          next if details["type"] == "project"
+
+          # Split name/version format
+          parts = name_version.split("/")
+          next unless parts.length == 2
+
+          name, version = parts
+          next if name.nil? || name.empty? || version.nil? || version.empty?
+
+          Dependency.new(
+            name: name,
+            requirement: version,
+            type: "runtime",
+            source: options.fetch(:filename, nil),
+            platform: platform_name
+          )
+        end.compact
+
+        ParserResult.new(dependencies: dependencies)
       end
     end
   end
