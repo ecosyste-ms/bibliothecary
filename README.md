@@ -95,6 +95,7 @@ All available config options are in: https://github.com/ecosyste-ms/bibliothecar
   - paket.lock
   - *.csproj
   - project.assets.json
+  - \*.deps.json
 - Bower
   - bower.json
 - BentoML

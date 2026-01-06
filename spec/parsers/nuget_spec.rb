@@ -672,4 +672,24 @@ describe Bibliothecary::Parsers::Nuget do
     expect(described_class.match?("example.csproj")).to be_truthy
     expect(described_class.match?("project.assets.json")).to be_truthy
   end
+
+  it "parses dependencies from .deps.json" do
+    expect(described_class.analyse_contents("example.deps.json", load_fixture("example.deps.json"))).to eq({
+      platform: "nuget",
+      path: "example.deps.json",
+      project_name: nil,
+      dependencies: [
+        Bibliothecary::Dependency.new(platform: "nuget", name: "Newtonsoft.Json", requirement: "13.0.1", type: "runtime", source: "example.deps.json"),
+        Bibliothecary::Dependency.new(platform: "nuget", name: "Microsoft.Extensions.DependencyInjection", requirement: "6.0.0", type: "runtime", source: "example.deps.json"),
+        Bibliothecary::Dependency.new(platform: "nuget", name: "Serilog", requirement: "2.10.0", type: "runtime", source: "example.deps.json"),
+      ],
+      kind: "lockfile",
+      success: true,
+    })
+  end
+
+  it "matches .deps.json filepath" do
+    expect(described_class.match?("myapp.deps.json")).to be_truthy
+    expect(described_class.match?("example.deps.json")).to be_truthy
+  end
 end
