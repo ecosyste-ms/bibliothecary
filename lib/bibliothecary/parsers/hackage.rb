@@ -12,6 +12,9 @@ module Bibliothecary
       # Matches build-tool-depends format: package:tool == version
       BUILD_TOOL_REGEXP = /^\s*([a-zA-Z][a-zA-Z0-9-]*):[a-zA-Z][a-zA-Z0-9-]*\s*((?:[<>=!]+\s*[\d.*]+(?:\s*&&\s*[<>=!]+\s*[\d.*]+)*)?)/
 
+      # Matches stack.yaml.lock hackage entries like: hackage: fuzzyset-0.2.4@sha256:...
+      STACK_LOCK_REGEXP = /hackage:\s*([a-zA-Z0-9-]+)-([0-9.]+)@/
+
       def self.mapping
         {
           match_extension(".cabal") => {
@@ -21,6 +24,10 @@ module Bibliothecary
           match_extension("cabal.config") => {
             kind: "lockfile",
             parser: :parse_cabal_config,
+          },
+          match_filename("stack.yaml.lock") => {
+            kind: "lockfile",
+            parser: :parse_stack_yaml_lock,
           },
         }
       end
@@ -162,6 +169,26 @@ module Bibliothecary
             platform: platform_name,
             name: dep[0],
             requirement: dep[1] || "*",
+            type: "runtime",
+            source: source
+          )
+        end
+
+        ParserResult.new(dependencies: deps)
+      end
+
+      def self.parse_stack_yaml_lock(file_contents, options: {})
+        source = options.fetch(:filename, "stack.yaml.lock")
+        deps = []
+
+        file_contents.each_line do |line|
+          match = line.match(STACK_LOCK_REGEXP)
+          next unless match
+
+          deps << Dependency.new(
+            platform: platform_name,
+            name: match[1],
+            requirement: match[2],
             type: "runtime",
             source: source
           )

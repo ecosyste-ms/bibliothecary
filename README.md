@@ -171,6 +171,7 @@ All available config options are in: https://github.com/ecosyste-ms/bibliothecar
 - Hackage
   - \*.cabal
   - cabal.config
+  - stack.yaml.lock
 - Actions
   - action.yml
   - action.yaml
