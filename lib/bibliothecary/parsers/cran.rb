@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require "json"
+
 module Bibliothecary
   module Parsers
     class CRAN
@@ -12,6 +14,10 @@ module Bibliothecary
           match_filename("DESCRIPTION", case_insensitive: true) => {
             kind: "manifest",
             parser: :parse_description,
+          },
+          match_filename("renv.lock") => {
+            kind: "lockfile",
+            parser: :parse_renv_lock,
           },
         }
       end
@@ -66,6 +72,29 @@ module Bibliothecary
             platform: platform_name
           )
         end.compact
+      end
+
+      def self.parse_renv_lock(file_contents, options: {})
+        source = options.fetch(:filename, nil)
+        manifest = JSON.parse(file_contents)
+        packages = manifest.fetch("Packages", {})
+
+        dependencies = packages.map do |_key, pkg|
+          # Only include packages from CRAN repository
+          # Skip local packages and packages from other sources like Bioconductor
+          repository = pkg["Repository"]
+          next unless repository == "CRAN"
+
+          Dependency.new(
+            name: pkg["Package"],
+            requirement: pkg["Version"],
+            type: "runtime",
+            source: source,
+            platform: platform_name
+          )
+        end.compact
+
+        ParserResult.new(dependencies: dependencies)
       end
     end
   end

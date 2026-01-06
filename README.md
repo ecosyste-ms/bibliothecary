@@ -124,6 +124,7 @@ All available config options are in: https://github.com/ecosyste-ms/bibliothecar
   - MLmodel
 - CRAN
   - DESCRIPTION
+  - renv.lock
 - Cargo
   - Cargo.toml
   - Cargo.lock
