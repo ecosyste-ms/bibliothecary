@@ -130,6 +130,12 @@ module Bibliothecary
             kind: "lockfile",
             parser: :parse_maven_tree_dot,
           },
+          # gradle.lockfile is the output of Gradle dependency locking:
+          # https://docs.gradle.org/current/userguide/dependency_locking.html
+          match_filename("gradle.lockfile", case_insensitive: true) => {
+            kind: "lockfile",
+            parser: :parse_gradle_lockfile,
+          },
         }
       end
 
@@ -411,6 +417,40 @@ module Bibliothecary
           dependencies: deps,
           project_name: project_name
         )
+      end
+
+      def self.parse_gradle_lockfile(file_contents, options: {})
+        source = options.fetch(:filename, nil)
+        deps = []
+
+        file_contents.each_line do |line|
+          line = line.strip
+          # Skip comments and empty lines
+          next if line.empty? || line.start_with?("#")
+
+          # Format: group:artifact:version=configurations
+          # Split on = first to separate the GAV from configurations
+          gav_part = line.split("=").first
+          next unless gav_part
+
+          parts = gav_part.split(":")
+          # Must have exactly 3 parts: group, artifact, version
+          next unless parts.length == 3
+
+          group, artifact, version = parts
+          # Skip empty entries (like "empty=")
+          next if version.nil? || version.empty?
+
+          deps << Dependency.new(
+            name: "#{group}:#{artifact}",
+            requirement: version,
+            type: "runtime",
+            source: source,
+            platform: platform_name
+          )
+        end
+
+        ParserResult.new(dependencies: deps)
       end
 
       def self.parse_resolved_dep_line(line, options: {})

@@ -828,6 +828,23 @@ RSpec.describe Bibliothecary::Parsers::Maven do
       expect(guavas.length).to eq 1
       expect(guavas[0].requirement).to eq "30.1.1-jre"
     end
+
+    it "parses dependencies from gradle.lockfile" do
+      deps = described_class.analyse_contents("gradle.lockfile", load_fixture("gradle.lockfile"))
+      expect(deps[:kind]).to eq "lockfile"
+      expect(deps[:dependencies]).to match_array([
+        Bibliothecary::Dependency.new(platform: "maven", name: "org.springframework.security:spring-security-crypto", requirement: "5.7.3", type: "runtime", source: "gradle.lockfile"),
+        Bibliothecary::Dependency.new(platform: "maven", name: "org.springframework:spring-core", requirement: "5.3.23", type: "runtime", source: "gradle.lockfile"),
+        Bibliothecary::Dependency.new(platform: "maven", name: "org.springframework:spring-jcl", requirement: "5.3.23", type: "runtime", source: "gradle.lockfile"),
+        Bibliothecary::Dependency.new(platform: "maven", name: "com.google.guava:guava", requirement: "31.1-jre", type: "runtime", source: "gradle.lockfile"),
+        Bibliothecary::Dependency.new(platform: "maven", name: "org.slf4j:slf4j-api", requirement: "2.0.6", type: "runtime", source: "gradle.lockfile"),
+        Bibliothecary::Dependency.new(platform: "maven", name: "org.junit.jupiter:junit-jupiter-api", requirement: "5.9.2", type: "runtime", source: "gradle.lockfile"),
+      ])
+    end
+
+    it "matches gradle.lockfile filepath" do
+      expect(described_class.match?("gradle.lockfile")).to be_truthy
+    end
   end
 
   describe "parse_pom_manifests" do

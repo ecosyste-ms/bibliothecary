@@ -1,0 +1,10 @@
+# This is a Gradle generated file for dependency locking.
+# Manual edits can break the build and are not advised.
+# This file is expected to be part of source control.
+org.springframework.security:spring-security-crypto:5.7.3=compileClasspath,productionRuntimeClasspath,runtimeClasspath
+org.springframework:spring-core:5.3.23=compileClasspath,productionRuntimeClasspath,runtimeClasspath
+org.springframework:spring-jcl:5.3.23=compileClasspath,productionRuntimeClasspath,runtimeClasspath
+com.google.guava:guava:31.1-jre=compileClasspath,runtimeClasspath
+org.slf4j:slf4j-api:2.0.6=compileClasspath,testCompileClasspath,testRuntimeClasspath
+org.junit.jupiter:junit-jupiter-api:5.9.2=testCompileClasspath,testRuntimeClasspath
+empty=
