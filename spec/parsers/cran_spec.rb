@@ -81,4 +81,23 @@ describe Bibliothecary::Parsers::CRAN do
   it "matches valid manifest filepaths" do
     expect(described_class.match?("DESCRIPTION")).to be_truthy
   end
+
+  it "parses dependencies from renv.lock" do
+    expect(described_class.analyse_contents("renv.lock", load_fixture("renv.lock"))).to eq({
+      platform: "cran",
+      path: "renv.lock",
+      project_name: nil,
+      dependencies: [
+        Bibliothecary::Dependency.new(platform: "cran", name: "dplyr", requirement: "1.1.4", type: "runtime", source: "renv.lock"),
+        Bibliothecary::Dependency.new(platform: "cran", name: "ggplot2", requirement: "3.4.4", type: "runtime", source: "renv.lock"),
+        Bibliothecary::Dependency.new(platform: "cran", name: "tidyr", requirement: "1.3.0", type: "runtime", source: "renv.lock"),
+      ],
+      kind: "lockfile",
+      success: true
+    })
+  end
+
+  it "matches renv.lock filepath" do
+    expect(described_class.match?("renv.lock")).to be_truthy
+  end
 end
