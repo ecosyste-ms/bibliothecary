@@ -175,4 +175,23 @@ describe Bibliothecary::Parsers::Hackage do
       success: true,
     })
   end
+
+  it "parses dependencies from stack.yaml.lock" do
+    expect(described_class.analyse_contents("stack.yaml.lock", load_fixture("stack.yaml.lock"))).to eq({
+      platform: "hackage",
+      path: "stack.yaml.lock",
+      project_name: nil,
+      dependencies: [
+        Bibliothecary::Dependency.new(platform: "hackage", name: "fuzzyset", requirement: "0.2.4", type: "runtime", source: "stack.yaml.lock"),
+        Bibliothecary::Dependency.new(platform: "hackage", name: "hasql-pool", requirement: "1.0.1", type: "runtime", source: "stack.yaml.lock"),
+        Bibliothecary::Dependency.new(platform: "hackage", name: "jose-jwt", requirement: "0.10.0", type: "runtime", source: "stack.yaml.lock"),
+      ],
+      kind: "lockfile",
+      success: true,
+    })
+  end
+
+  it "matches stack.yaml.lock filepath" do
+    expect(described_class.match?("stack.yaml.lock")).to be_truthy
+  end
 end
