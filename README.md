@@ -85,6 +85,7 @@ All available config options are in: https://github.com/ecosyste-ms/bibliothecar
   - poetry.lock
   - uv.lock
   - pylock.toml
+  - pdm.lock
   - pip-resolved-dependencies.txt
   - pip-dependency-graph.json
 - Nuget
