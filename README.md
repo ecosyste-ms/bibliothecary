@@ -63,6 +63,7 @@ All available config options are in: https://github.com/ecosyste-ms/bibliothecar
   - maven-dependency-tree.txt
   - maven-dependency-tree.dot
   - gradle.lockfile
+  - verification-metadata.xml
 - RubyGems
   - Gemfile
   - Gemfile.lock

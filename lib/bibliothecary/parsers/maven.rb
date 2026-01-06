@@ -136,6 +136,12 @@ module Bibliothecary
             kind: "lockfile",
             parser: :parse_gradle_lockfile,
           },
+          # gradle/verification-metadata.xml is used by Gradle for dependency verification
+          # https://docs.gradle.org/current/userguide/dependency_verification.html
+          match_filename("verification-metadata.xml", case_insensitive: true) => {
+            kind: "lockfile",
+            parser: :parse_gradle_verification_metadata,
+          },
         }
       end
 
@@ -443,6 +449,34 @@ module Bibliothecary
 
           deps << Dependency.new(
             name: "#{group}:#{artifact}",
+            requirement: version,
+            type: "runtime",
+            source: source,
+            platform: platform_name
+          )
+        end
+
+        ParserResult.new(dependencies: deps)
+      end
+
+      def self.parse_gradle_verification_metadata(file_contents, options: {})
+        source = options.fetch(:filename, nil)
+        deps = []
+
+        doc = Ox.parse(file_contents)
+        components = doc.locate("verification-metadata/components/component")
+
+        components.each do |component|
+          attrs = component.attributes
+          group = attrs[:group]
+          name = attrs[:name]
+          version = attrs[:version]
+
+          next if group.nil? || name.nil? || version.nil?
+          next if group.empty? || name.empty? || version.empty?
+
+          deps << Dependency.new(
+            name: "#{group}:#{name}",
             requirement: version,
             type: "runtime",
             source: source,

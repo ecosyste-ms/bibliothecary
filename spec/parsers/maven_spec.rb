@@ -845,6 +845,21 @@ RSpec.describe Bibliothecary::Parsers::Maven do
     it "matches gradle.lockfile filepath" do
       expect(described_class.match?("gradle.lockfile")).to be_truthy
     end
+
+    it "parses dependencies from verification-metadata.xml" do
+      deps = described_class.analyse_contents("verification-metadata.xml", load_fixture("gradle/verification-metadata.xml"))
+      expect(deps[:kind]).to eq "lockfile"
+      expect(deps[:dependencies]).to match_array([
+        Bibliothecary::Dependency.new(platform: "maven", name: "org.apache.pdfbox:pdfbox", requirement: "2.0.17", type: "runtime", source: "verification-metadata.xml"),
+        Bibliothecary::Dependency.new(platform: "maven", name: "com.github.javaparser:javaparser-core", requirement: "3.6.11", type: "runtime", source: "verification-metadata.xml"),
+        Bibliothecary::Dependency.new(platform: "maven", name: "org.springframework:spring-core", requirement: "5.3.23", type: "runtime", source: "verification-metadata.xml"),
+      ])
+    end
+
+    it "matches verification-metadata.xml filepath" do
+      expect(described_class.match?("verification-metadata.xml")).to be_truthy
+      expect(described_class.match?("gradle/verification-metadata.xml")).to be_truthy
+    end
   end
 
   describe "parse_pom_manifests" do
