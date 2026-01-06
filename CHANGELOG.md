@@ -13,6 +13,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 
+## [15.1.0]
+
+### Added
+
+- pdm.lock parser for Python PDM package manager
+- renv.lock parser for R package management
+- stack.yaml.lock parser for Haskell Stack
+- gradle.lockfile parser for Gradle dependency locking
+- .deps.json parser for .NET runtime dependencies
+- verification-metadata.xml parser for Gradle dependency verification
+- Nimble parser for Nim package manager (.nimble files)
+- LuaRocks parser for Lua package manager (.rockspec files)
+
 ## [15.0.1]
 
 ### Changed
