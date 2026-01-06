@@ -196,6 +196,8 @@ All available config options are in: https://github.com/ecosyste-ms/bibliothecar
   - Modelfile
 - Nimble
   - \*.nimble
+- LuaRocks
+  - \*.rockspec
 
 ## Development
 
