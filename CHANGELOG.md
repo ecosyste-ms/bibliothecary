@@ -9,6 +9,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+### Changed
+
+### Removed
+
+## [15.1.1]
+
+### Added
+
 - CPAN: cpanfile parser for Perl dependency declarations
 - CPAN: cpanfile.snapshot parser for Carton lockfiles
 - CPAN: Makefile.PL parser for ExtUtils::MakeMaker build scripts
@@ -17,8 +25,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - CPAN: META.json and META.yml are now classified as lockfiles (they are generated, not hand-written)
-
-### Removed
 
 ## [15.1.0]
 
