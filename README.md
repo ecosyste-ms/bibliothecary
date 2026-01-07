@@ -106,6 +106,10 @@ All available config options are in: https://github.com/ecosyste-ms/bibliothecar
 - CPAN
   - META.json
   - META.yml
+  - cpanfile
+  - cpanfile.snapshot
+  - Makefile.PL
+  - Build.PL
 - CocoaPods
   - Podfile
   - Podfile.lock

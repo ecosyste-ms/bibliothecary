@@ -11,11 +11,11 @@ module Bibliothecary
       def self.mapping
         {
           match_filename("META.json", case_insensitive: true) => {
-            kind: "manifest",
+            kind: "lockfile",
             parser: :parse_json_manifest,
           },
           match_filename("META.yml", case_insensitive: true) => {
-            kind: "manifest",
+            kind: "lockfile",
             parser: :parse_yaml_manifest,
           },
           match_filename("cpanfile", case_insensitive: true) => {

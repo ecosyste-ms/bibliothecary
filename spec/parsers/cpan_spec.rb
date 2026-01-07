@@ -19,7 +19,7 @@ describe Bibliothecary::Parsers::CPAN do
         Bibliothecary::Dependency.new(platform: "cpan", name: "XML::Simple", requirement: 0, type: "runtime", source: "META.yml"),
         Bibliothecary::Dependency.new(platform: "cpan", name: "perl", requirement: "5.6.0", type: "runtime", source: "META.yml"),
       ],
-                                                                                           kind: "manifest",
+                                                                                           kind: "lockfile",
                                                                                            success: true,
                                                                                          })
   end
@@ -36,7 +36,7 @@ describe Bibliothecary::Parsers::CPAN do
         Bibliothecary::Dependency.new(platform: "cpan", name: "Getopt::Long", requirement: "2.32", type: "runtime", source: "META.json"),
         Bibliothecary::Dependency.new(platform: "cpan", name: "List::Util", requirement: "1.07_00", type: "runtime", source: "META.json"),
       ],
-                                                                                             kind: "manifest",
+                                                                                             kind: "lockfile",
                                                                                              success: true,
                                                                                            })
   end
