@@ -202,6 +202,10 @@ All available config options are in: https://github.com/ecosyste-ms/bibliothecar
   - \*.nimble
 - LuaRocks
   - \*.rockspec
+- Deno
+  - deno.json
+  - deno.jsonc
+  - deno.lock
 
 ## Development
 

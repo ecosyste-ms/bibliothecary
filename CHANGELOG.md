@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Deno parser for deno.json, deno.jsonc, and deno.lock files (supports npm: and jsr: specifiers)
+
 ### Changed
 
 ### Removed

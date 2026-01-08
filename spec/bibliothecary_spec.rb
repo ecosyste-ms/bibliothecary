@@ -21,6 +21,7 @@ describe Bibliothecary do
           Bibliothecary::Parsers::Conda,
           Bibliothecary::Parsers::CPAN,
           Bibliothecary::Parsers::CRAN,
+          Bibliothecary::Parsers::Deno,
           Bibliothecary::Parsers::Docker,
           Bibliothecary::Parsers::Dub,
           Bibliothecary::Parsers::DVC,

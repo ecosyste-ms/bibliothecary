@@ -1,0 +1,14 @@
+{
+  "name": "my-deno-app",
+  "version": "0.1.0",
+  "tasks": {
+    "dev": "deno run -A main.ts",
+    "test": "deno test -A"
+  },
+  "imports": {
+    "chalk": "npm:chalk@5.3.0",
+    "lodash": "npm:lodash",
+    "@std/path": "jsr:@std/path@^1.0.0",
+    "@std/fs": "jsr:@std/fs"
+  }
+}

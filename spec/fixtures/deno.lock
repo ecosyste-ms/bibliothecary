@@ -1,0 +1,25 @@
+{
+  "version": "4",
+  "specifiers": {
+    "jsr:@std/fs@*": "1.0.3",
+    "jsr:@std/path@^1.0.0": "1.0.6",
+    "npm:chalk@5.3.0": "5.3.0",
+    "npm:lodash@*": "4.17.21"
+  },
+  "jsr": {
+    "@std/fs@1.0.3": {
+      "integrity": "sha256-abc123"
+    },
+    "@std/path@1.0.6": {
+      "integrity": "sha256-def456"
+    }
+  },
+  "npm": {
+    "chalk@5.3.0": {
+      "integrity": "sha512-xyz789"
+    },
+    "lodash@4.17.21": {
+      "integrity": "sha512-uvw012"
+    }
+  }
+}
