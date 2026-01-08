@@ -5,6 +5,10 @@ module Bibliothecary
     class MLflow
       include Bibliothecary::Analyser
 
+      def self.file_patterns
+        ["MLmodel"]
+      end
+
       def self.mapping
         {
           match_filename("MLmodel") => {

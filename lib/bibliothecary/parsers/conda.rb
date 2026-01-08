@@ -7,6 +7,10 @@ module Bibliothecary
     class Conda
       include Bibliothecary::Analyser
 
+      def self.file_patterns
+        ["environment.yml", "environment.yaml"]
+      end
+
       def self.mapping
         {
           match_filename("environment.yml") => {

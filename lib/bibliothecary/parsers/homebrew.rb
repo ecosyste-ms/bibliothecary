@@ -5,6 +5,10 @@ module Bibliothecary
 
       HOMEBREW_REGEXP = /^brew\s(.+),?\s?/
 
+      def self.file_patterns
+        ["Brewfile", "Brewfile.lock.json"]
+      end
+
       def self.mapping
         {
           match_filename("Brewfile", case_insensitive: true) => {

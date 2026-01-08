@@ -7,6 +7,10 @@ module Bibliothecary
     class Shard
       include Bibliothecary::Analyser
 
+      def self.file_patterns
+        ["shard.yml", "shard.lock"]
+      end
+
       def self.mapping
         {
           match_filename("shard.yml", case_insensitive: true) => {

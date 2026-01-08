@@ -7,6 +7,10 @@ module Bibliothecary
     class Haxelib
       include Bibliothecary::Analyser
 
+      def self.file_patterns
+        ["haxelib.json"]
+      end
+
       def self.mapping
         {
           match_filename("haxelib.json") => {

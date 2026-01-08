@@ -5,6 +5,10 @@ module Bibliothecary
     class DVC
       include Bibliothecary::Analyser
 
+      def self.file_patterns
+        ["dvc.yaml"]
+      end
+
       def self.mapping
         {
           match_filename("dvc.yaml") => {

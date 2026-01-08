@@ -19,6 +19,10 @@ module Bibliothecary
       # Gemspec pattern - captures type in first group
       GEMSPEC_DEPENDENCY = /\.add_(development_|runtime_)?dependency\s*\(?\s*['"]([^'"]+)['"]\s*(?:,\s*['"]([^'"]+)['"])?(?:\s*,\s*['"]([^'"]+)['"])?\s*\)?/
 
+      def self.file_patterns
+        ["Gemfile", "Gemfile.lock", "gems.rb", "gems.locked", "*.gemspec"]
+      end
+
       def self.mapping
         {
           match_filenames("Gemfile", "gems.rb") => {

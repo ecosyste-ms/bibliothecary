@@ -5,6 +5,10 @@ module Bibliothecary
     class Cargo
       include Bibliothecary::Analyser
 
+      def self.file_patterns
+        ["Cargo.toml", "Cargo.lock"]
+      end
+
       def self.mapping
         {
           match_filename("Cargo.toml") => {

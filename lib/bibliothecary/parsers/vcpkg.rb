@@ -3,6 +3,10 @@ module Bibliothecary
     class Vcpkg
       include Bibliothecary::Analyser
 
+      def self.file_patterns
+        ["vcpkg.json", "_generated-vcpkg-list.json"]
+      end
+
       def self.mapping
         {
           match_filename("vcpkg.json", case_insensitive: true) => {

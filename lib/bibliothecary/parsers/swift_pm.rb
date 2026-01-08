@@ -12,6 +12,10 @@ module Bibliothecary
       PACKAGE_REGEXP_EXACT = /\.package\s*\(\s*(?:name:\s*"[^"]+",\s*)?url:\s*"([^"]+)"[^)]*(?:\.exact|exact)\s*\(\s*"([^"]+)"\s*\)/i
       PACKAGE_REGEXP_RANGE = /\.package\s*\(\s*(?:name:\s*"[^"]+",\s*)?url:\s*"([^"]+)"[^)]*"([^"]+)"\s*(?:\.\.|\.\.\.)\s*"([^"]+)"/i
 
+      def self.file_patterns
+        ["Package.swift", "Package.resolved"]
+      end
+
       def self.mapping
         {
           match_filename("Package.swift", case_insensitive: true) => {

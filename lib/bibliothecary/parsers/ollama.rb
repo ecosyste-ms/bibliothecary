@@ -5,6 +5,10 @@ module Bibliothecary
     class Ollama
       include Bibliothecary::Analyser
 
+      def self.file_patterns
+        ["Modelfile"]
+      end
+
       def self.mapping
         {
           match_filename("Modelfile") => {

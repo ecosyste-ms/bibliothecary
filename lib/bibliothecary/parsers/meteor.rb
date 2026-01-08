@@ -7,6 +7,10 @@ module Bibliothecary
     class Meteor
       include Bibliothecary::Analyser
 
+      def self.file_patterns
+        ["versions.json"]
+      end
+
       def self.mapping
         {
           match_filename("versions.json") => {

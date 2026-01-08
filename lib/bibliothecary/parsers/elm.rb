@@ -7,6 +7,10 @@ module Bibliothecary
     class Elm
       include Bibliothecary::Analyser
 
+      def self.file_patterns
+        ["elm-package.json", "elm_dependencies.json", "elm-stuff/exact-dependencies.json"]
+      end
+
       def self.mapping
         {
           match_filenames("elm-package.json", "elm_dependencies.json") => {

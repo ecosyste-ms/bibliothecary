@@ -9,6 +9,10 @@ module Bibliothecary
 
       SDL_DEPENDENCY_REGEXP = /^dependency\s+"([^"]+)"(?:\s+version="([^"]+)")?/
 
+      def self.file_patterns
+        ["dub.json", "dub.sdl"]
+      end
+
       def self.mapping
         {
           match_filename("dub.json") => {

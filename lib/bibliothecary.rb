@@ -57,6 +57,13 @@ module Bibliothecary
     runner.package_managers
   end
 
+  def self.supported_files
+    package_managers.each_with_object({}) do |pm, hash|
+      patterns = pm.file_patterns
+      hash[pm.platform_name] = patterns unless patterns.empty?
+    end
+  end
+
   def self.find_manifests(path)
     runner.find_manifests(path)
   end

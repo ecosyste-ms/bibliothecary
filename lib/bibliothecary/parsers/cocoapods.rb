@@ -17,6 +17,10 @@ module Bibliothecary
       # Podspec pattern: .dependency "Name", "version"
       PODSPEC_DEPENDENCY = /\.dependency\s+['"]([^'"]+)['"]\s*(?:,\s*['"]([^'"]+)['"])?/
 
+      def self.file_patterns
+        ["Podfile", "*.podspec", "Podfile.lock", "*.podspec.json"]
+      end
+
       def self.mapping
         {
           match_filename("Podfile") => {

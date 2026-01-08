@@ -8,6 +8,10 @@ module Bibliothecary
 
       DOCKER_COMPOSE_REGEXP = /docker-compose[a-zA-Z0-9\-_\.]*\.yml$/
 
+      def self.file_patterns
+        ["docker-compose*.yml", "Dockerfile"]
+      end
+
       def self.mapping
         {
           lambda { |p| DOCKER_COMPOSE_REGEXP.match(p) } => {

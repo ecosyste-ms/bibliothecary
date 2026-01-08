@@ -7,6 +7,10 @@ module Bibliothecary
 
       WORKFLOW_REGEX = /^\.github\/workflows\/.*.y(a)?ml/
 
+      def self.file_patterns
+        ["action.yml", "action.yaml", ".github/workflows/*.yml", ".github/workflows/*.yaml"]
+      end
+
       def self.mapping
         {
           match_filenames("action.yml","action.yaml") => {

@@ -7,6 +7,10 @@ module Bibliothecary
     class Pub
       include Bibliothecary::Analyser
 
+      def self.file_patterns
+        ["pubspec.yaml", "pubspec.lock"]
+      end
+
       def self.mapping
         {
           match_filename("pubspec.yaml", case_insensitive: true) => {

@@ -15,6 +15,10 @@ module Bibliothecary
       # Matches stack.yaml.lock hackage entries like: hackage: fuzzyset-0.2.4@sha256:...
       STACK_LOCK_REGEXP = /hackage:\s*([a-zA-Z0-9-]+)-([0-9.]+)@/
 
+      def self.file_patterns
+        ["*.cabal", "*cabal.config", "stack.yaml.lock"]
+      end
+
       def self.mapping
         {
           match_extension(".cabal") => {

@@ -5,6 +5,10 @@ module Bibliothecary
     class BentoML
       include Bibliothecary::Analyser
 
+      def self.file_patterns
+        ["bentofile.yaml"]
+      end
+
       def self.mapping
         {
           match_filename("bentofile.yaml") => {

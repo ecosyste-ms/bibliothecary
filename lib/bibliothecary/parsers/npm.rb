@@ -10,6 +10,10 @@ module Bibliothecary
       # Max depth to recurse into the "dependencies" property of package-lock.json
       PACKAGE_LOCK_JSON_MAX_DEPTH = 10
 
+      def self.file_patterns
+        ["package.json", "package-lock.json", "npm-shrinkwrap.json", "yarn.lock", "pnpm-lock.yaml", "bun.lock", "npm-ls.json"]
+      end
+
       def self.mapping
         {
           match_filename("package.json") => {

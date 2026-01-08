@@ -8,6 +8,10 @@ module Bibliothecary
     class Nuget
       include Bibliothecary::Analyser
 
+      def self.file_patterns
+        ["Project.json", "Project.lock.json", "packages.lock.json", "packages.config", "*.nuspec", "*.csproj", "paket.lock", "project.assets.json", "*.deps.json"]
+      end
+
       def self.mapping
         {
           match_filename("Project.json") => {

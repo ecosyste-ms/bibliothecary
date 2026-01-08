@@ -8,6 +8,10 @@ module Bibliothecary
     class CPAN
       include Bibliothecary::Analyser
 
+      def self.file_patterns
+        ["META.json", "META.yml", "cpanfile", "cpanfile.snapshot", "Makefile.PL", "Build.PL"]
+      end
+
       def self.mapping
         {
           match_filename("META.json", case_insensitive: true) => {

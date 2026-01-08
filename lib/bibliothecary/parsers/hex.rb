@@ -10,6 +10,10 @@ module Bibliothecary
       HEX_LOCK_REGEXP = /"([^"]+)":\s*\{:hex,\s*:[^,]+,\s*"([^"]+)"/
       GIT_LOCK_REGEXP = /"([^"]+)":\s*\{:git,\s*"([^"]+)",\s*"([^"]+)"/
 
+      def self.file_patterns
+        ["mix.exs", "mix.lock"]
+      end
+
       def self.mapping
         {
           match_filename("mix.exs") => {

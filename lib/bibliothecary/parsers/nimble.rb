@@ -9,6 +9,10 @@ module Bibliothecary
       # or: requires "packagename"
       REQUIRES_REGEXP = /^\s*requires\s+"([^"]+)"/
 
+      def self.file_patterns
+        ["*.nimble"]
+      end
+
       def self.mapping
         {
           match_extension(".nimble") => {

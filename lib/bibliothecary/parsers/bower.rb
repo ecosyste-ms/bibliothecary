@@ -7,6 +7,10 @@ module Bibliothecary
     class Bower
       include Bibliothecary::Analyser
 
+      def self.file_patterns
+        ["bower.json"]
+      end
+
       def self.mapping
         {
           match_filename("bower.json") => {

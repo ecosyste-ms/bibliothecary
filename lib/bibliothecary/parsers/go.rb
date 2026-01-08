@@ -18,6 +18,10 @@ module Bibliothecary
       GOMOD_MULTILINE_END_REGEXP = /^\)/
       GOSUM_REGEXP = /^(.+)\s+(.+)\s+(.+)$/
 
+      def self.file_patterns
+        ["go.mod", "go.sum", "glide.yaml", "glide.lock", "Godeps/Godeps.json", "Godeps", "vendor/manifest", "vendor/vendor.json", "Gopkg.toml", "Gopkg.lock", "go-resolved-dependencies.json"]
+      end
+
       def self.mapping
         {
           # Go Modules (recommended)

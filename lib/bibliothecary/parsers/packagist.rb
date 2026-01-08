@@ -7,6 +7,10 @@ module Bibliothecary
     class Packagist
       include Bibliothecary::Analyser
 
+      def self.file_patterns
+        ["composer.json", "composer.lock"]
+      end
+
       def self.mapping
         {
           match_filename("composer.json") => {

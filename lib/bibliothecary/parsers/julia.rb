@@ -5,6 +5,10 @@ module Bibliothecary
     class Julia
       include Bibliothecary::Analyser
 
+      def self.file_patterns
+        ["REQUIRE"]
+      end
+
       def self.mapping
         {
           match_filename("REQUIRE", case_insensitive: true) => {

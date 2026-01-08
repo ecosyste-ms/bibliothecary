@@ -62,6 +62,10 @@ module Bibliothecary
       # e.g. "[info]  "
       SBT_IGNORE_REGEXP = /^\[info\]\s*$/
 
+      def self.file_patterns
+        ["ivy.xml", "pom.xml", "build.gradle", "build.gradle.kts", "gradle-dependencies-q.txt", "maven-resolved-dependencies.txt", "sbt-update-full.txt", "maven-dependency-tree.txt", "maven-dependency-tree.dot", "gradle.lockfile", "verification-metadata.xml"]
+      end
+
       # Copied from the "strings-ansi" gem, because it seems abandoned: https://github.com/piotrmurach/strings-ansi/pull/2
       # From: https://github.com/piotrmurach/strings-ansi/blob/35d0c9430cf0a8022dc12bdab005bce296cb9f00/lib/strings/ansi.rb#L14-L29
       # License: MIT

@@ -44,17 +44,95 @@ All available config options are in: https://github.com/ecosyste-ms/bibliothecar
 
 ## Supported package manager file formats
 
-- npm
-  - package.json
-  - package-lock.json
-  - npm-shrinkwrap.json
-  - yarn.lock
-  - pnpm-lock.yaml
-  - bun.lock
-  - npm-ls.json
+- Actions
+  - action.yml
+  - action.yaml
+  - .github/workflows/\*.yml
+  - .github/workflows/\*.yaml
+- Anaconda
+  - environment.yml
+  - environment.yaml
+- BentoML
+  - bentofile.yaml
+- Bower
+  - bower.json
+- Cargo
+  - Cargo.toml
+  - Cargo.lock
+- Carthage
+  - Cartfile
+  - Cartfile.private
+  - Cartfile.resolved
+- Clojars
+  - project.clj
+- CocoaPods
+  - Podfile
+  - \*.podspec
+  - Podfile.lock
+  - \*.podspec.json
+- Cog
+  - cog.yaml
+- Conan
+  - conanfile.py
+  - conanfile.txt
+  - conan.lock
+- CPAN
+  - META.json
+  - META.yml
+  - cpanfile
+  - cpanfile.snapshot
+  - Makefile.PL
+  - Build.PL
+- CRAN
+  - DESCRIPTION
+  - renv.lock
+- Deno
+  - deno.json
+  - deno.jsonc
+  - deno.lock
+- Docker
+  - docker-compose\*.yml
+  - Dockerfile
+- Dub
+  - dub.json
+  - dub.sdl
+- DVC
+  - dvc.yaml
+- Elm
+  - elm-package.json
+  - elm_dependencies.json
+  - elm-stuff/exact-dependencies.json
+- Go
+  - go.mod
+  - go.sum
+  - glide.yaml
+  - glide.lock
+  - Godeps/Godeps.json
+  - Godeps
+  - vendor/manifest
+  - vendor/vendor.json
+  - Gopkg.toml
+  - Gopkg.lock
+  - go-resolved-dependencies.json
+- Hackage
+  - \*.cabal
+  - \*cabal.config
+  - stack.yaml.lock
+- Haxelib
+  - haxelib.json
+- Hex
+  - mix.exs
+  - mix.lock
+- Homebrew
+  - Brewfile
+  - Brewfile.lock.json
+- Julia
+  - REQUIRE
+- LuaRocks
+  - \*.rockspec
 - Maven
-  - pom.xml
   - ivy.xml
+  - pom.xml
   - build.gradle
   - build.gradle.kts
   - gradle-dependencies-q.txt
@@ -64,21 +142,43 @@ All available config options are in: https://github.com/ecosyste-ms/bibliothecar
   - maven-dependency-tree.dot
   - gradle.lockfile
   - verification-metadata.xml
-- RubyGems
-  - Gemfile
-  - Gemfile.lock
-  - gems.rb
-  - gems.locked
-  - *.gemspec
+- Meteor
+  - versions.json
+- MLflow
+  - MLmodel
+- Nimble
+  - \*.nimble
+- npm
+  - package.json
+  - package-lock.json
+  - npm-shrinkwrap.json
+  - yarn.lock
+  - pnpm-lock.yaml
+  - bun.lock
+  - npm-ls.json
+- Nuget
+  - Project.json
+  - Project.lock.json
+  - packages.lock.json
+  - packages.config
+  - \*.nuspec
+  - \*.csproj
+  - paket.lock
+  - project.assets.json
+  - \*.deps.json
+- Ollama
+  - Modelfile
 - Packagist
   - composer.json
   - composer.lock
+- Pub
+  - pubspec.yaml
+  - pubspec.lock
 - PyPi
   - setup.py
-  - req*.txt
-  - req*.pip
-  - requirements/*.txt
-  - requirements/*.pip
+  - requirements\*.txt
+  - requirements\*.pip
+  - requirements\*.in
   - requirements.frozen
   - Pipfile
   - Pipfile.lock
@@ -89,123 +189,21 @@ All available config options are in: https://github.com/ecosyste-ms/bibliothecar
   - pdm.lock
   - pip-resolved-dependencies.txt
   - pip-dependency-graph.json
-- Nuget
-  - packages.config
-  - packages.lock.json
-  - Project.json
-  - Project.lock.json
-  - *.nuspec
-  - paket.lock
-  - *.csproj
-  - project.assets.json
-  - \*.deps.json
-- Bower
-  - bower.json
-- BentoML
-  - bentofile.yaml
-- CPAN
-  - META.json
-  - META.yml
-  - cpanfile
-  - cpanfile.snapshot
-  - Makefile.PL
-  - Build.PL
-- CocoaPods
-  - Podfile
-  - Podfile.lock
-  - *.podspec
-  - *.podspec.json
-- Anaconda
-  - environment.yml
-  - environment.yaml
-- Clojars
-  - project.clj
-- Cog
-  - cog.yaml
-- Conan
-  - conanfile.py
-  - conanfile.txt
-  - conan.lock
-- Meteor
-  - versions.json
-- MLflow
-  - MLmodel
-- CRAN
-  - DESCRIPTION
-  - renv.lock
-- Cargo
-  - Cargo.toml
-  - Cargo.lock
-- Hex
-  - mix.exs
-  - mix.lock
-- Swift
-  - Package.swift
-  - Package.resolved
-- Pub
-  - pubspec.yaml
-  - pubspec.lock
-- Carthage
-  - Cartfile
-  - Cartfile.private
-  - Cartfile.resolved
-- Dub
-  - dub.json
-  - dub.sdl
-- Julia
-  - REQUIRE
+- RubyGems
+  - Gemfile
+  - Gemfile.lock
+  - gems.rb
+  - gems.locked
+  - \*.gemspec
 - Shards
   - shard.yml
   - shard.lock
-- Go
-  - glide.yaml
-  - glide.lock
-  - Godeps
-  - Godeps/Godeps.json
-  - vendor/manifest
-  - vendor/vendor.json
-  - Gopkg.toml
-  - Gopkg.lock
-  - go.mod
-  - go.sum
-  - go-resolved-dependencies.json
-- Elm
-  - elm-package.json
-  - elm_dependencies.json
-  - elm-stuff/exact-dependencies.json
-- Haxelib
-  - haxelib.json
-- Hackage
-  - \*.cabal
-  - cabal.config
-  - stack.yaml.lock
-- Actions
-  - action.yml
-  - action.yaml
-  - .github/workflows/*.yml
-  - .github/workflows/*.yaml
-- Docker
-  - Dockerfile
-  - docker-compose*.yml
-  - docker-compose*.yaml
-- DVC
-  - dvc.yaml
+- Swift
+  - Package.swift
+  - Package.resolved
 - Vcpkg
   - vcpkg.json
   - _generated-vcpkg-list.json
-- Homebrew
-  - Brewfile
-  - Brewfile.lock.json
-- Ollama
-  - Modelfile
-- Nimble
-  - \*.nimble
-- LuaRocks
-  - \*.rockspec
-- Deno
-  - deno.json
-  - deno.jsonc
-  - deno.lock
 
 ## Development
 

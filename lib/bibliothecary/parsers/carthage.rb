@@ -15,6 +15,10 @@ module Bibliothecary
       # Group 4: unquoted requirement (e.g., >= 1.0, ~> 2.0)
       CARTFILE_REGEXP = /^(github|git|binary)\s+"([^"]+)"(?:\s+(?:"([^"]+)"|((?:>=|<=|~>|==|>|<)\s*[\d.]+)))?/
 
+      def self.file_patterns
+        ["Cartfile", "Cartfile.private", "Cartfile.resolved"]
+      end
+
       def self.mapping
         {
           match_filename("Cartfile") => {

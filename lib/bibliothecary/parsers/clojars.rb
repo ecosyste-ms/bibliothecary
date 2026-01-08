@@ -7,6 +7,10 @@ module Bibliothecary
       # Name can be like: org.clojure/clojure, cheshire, ring/ring-defaults
       DEPENDENCY_REGEXP = %r{\[([a-zA-Z0-9_./\-]+)\s+"([^"]+)"\]}
 
+      def self.file_patterns
+        ["project.clj"]
+      end
+
       def self.mapping
         {
           match_filename("project.clj") => {

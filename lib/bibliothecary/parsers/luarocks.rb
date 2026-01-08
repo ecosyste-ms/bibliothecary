@@ -5,6 +5,10 @@ module Bibliothecary
     class LuaRocks
       include Bibliothecary::Analyser
 
+      def self.file_patterns
+        ["*.rockspec"]
+      end
+
       def self.mapping
         {
           match_extension(".rockspec") => {

@@ -5,6 +5,10 @@ module Bibliothecary
     class Cog
       include Bibliothecary::Analyser
 
+      def self.file_patterns
+        ["cog.yaml"]
+      end
+
       def self.mapping
         {
           match_filename("cog.yaml") => {

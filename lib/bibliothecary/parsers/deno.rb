@@ -7,6 +7,10 @@ module Bibliothecary
     class Deno
       include Bibliothecary::Analyser
 
+      def self.file_patterns
+        ["deno.json", "deno.jsonc", "deno.lock"]
+      end
+
       def self.mapping
         {
           match_filename("deno.json") => {

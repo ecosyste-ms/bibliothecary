@@ -24,6 +24,15 @@ module Bibliothecary
       # https://packaging.python.org/en/latest/specifications/pylock-toml/
       PEP_751_LOCKFILE_REGEXP = /^pylock(\.[^.]+)?\.toml$/
 
+      def self.file_patterns
+        [
+          "setup.py", "requirements*.txt", "requirements*.pip", "requirements*.in",
+          "requirements.frozen", "Pipfile", "Pipfile.lock", "pyproject.toml",
+          "poetry.lock", "uv.lock", "pylock.toml", "pdm.lock",
+          "pip-resolved-dependencies.txt", "pip-dependency-graph.json"
+        ]
+      end
+
       def self.mapping
         {
           match_filenames("requirements-dev.txt", "requirements/dev.txt",

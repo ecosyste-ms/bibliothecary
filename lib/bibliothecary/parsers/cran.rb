@@ -9,6 +9,10 @@ module Bibliothecary
 
       REQUIRE_REGEXP = /([a-zA-Z0-9\-_.]+)\s?\(?([><=\s\d.,]+)?\)?/
 
+      def self.file_patterns
+        ["DESCRIPTION", "renv.lock"]
+      end
+
       def self.mapping
         {
           match_filename("DESCRIPTION", case_insensitive: true) => {

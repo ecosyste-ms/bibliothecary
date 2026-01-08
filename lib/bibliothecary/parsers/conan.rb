@@ -5,6 +5,10 @@ module Bibliothecary
     class Conan
       include Bibliothecary::Analyser
 
+      def self.file_patterns
+        ["conanfile.py", "conanfile.txt", "conan.lock"]
+      end
+
       def self.mapping
         {
           match_filename("conanfile.py") => {
