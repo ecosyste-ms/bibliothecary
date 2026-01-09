@@ -148,6 +148,11 @@ All available config options are in: https://github.com/ecosyste-ms/bibliothecar
   - MLmodel
 - Nimble
   - \*.nimble
+- Nix
+  - flake.nix
+  - flake.lock
+  - nix/sources.json
+  - npins/sources.json
 - npm
   - package.json
   - package-lock.json
