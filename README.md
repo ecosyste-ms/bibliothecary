@@ -123,6 +123,8 @@ All available config options are in: https://github.com/ecosyste-ms/bibliothecar
 - Hex
   - mix.exs
   - mix.lock
+  - gleam.toml
+  - manifest.toml
 - Homebrew
   - Brewfile
   - Brewfile.lock.json
