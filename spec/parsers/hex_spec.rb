@@ -65,10 +65,26 @@ describe Bibliothecary::Parsers::Hex do
     })
   end
 
+  it "parses dependencies from rebar.lock" do
+    expect(described_class.analyse_contents("rebar.lock", load_fixture("rebar.lock"))).to eq({
+      platform: "hex",
+      path: "rebar.lock",
+      dependencies: [
+        Bibliothecary::Dependency.new(platform: "hex", name: "hex_core", requirement: "0.10.3", type: "runtime", source: "rebar.lock"),
+        Bibliothecary::Dependency.new(platform: "hex", name: "verl", requirement: "1.1.1", type: "runtime", source: "rebar.lock"),
+        Bibliothecary::Dependency.new(platform: "hex", name: "ssl_verify_fun", requirement: "1.1.7", type: "runtime", source: "rebar.lock"),
+      ],
+      kind: "lockfile",
+      project_name: nil,
+      success: true,
+    })
+  end
+
   it "matches valid manifest filepaths" do
     expect(described_class.match?("mix.exs")).to be_truthy
     expect(described_class.match?("mix.lock")).to be_truthy
     expect(described_class.match?("gleam.toml")).to be_truthy
+    expect(described_class.match?("rebar.lock")).to be_truthy
   end
 
   it "matches manifest.toml with Gleam content" do

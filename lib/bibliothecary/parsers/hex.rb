@@ -10,8 +10,11 @@ module Bibliothecary
       HEX_LOCK_REGEXP = /"([^"]+)":\s*\{:hex,\s*:[^,]+,\s*"([^"]+)"/
       GIT_LOCK_REGEXP = /"([^"]+)":\s*\{:git,\s*"([^"]+)",\s*"([^"]+)"/
 
+      # Matches rebar.lock entries: {<<"name">>,{pkg,<<"name">>,<<"version">>},N}
+      REBAR_LOCK_REGEXP = /\{<<"([^"]+)">>,\{pkg,<<"[^"]+">>,<<"([^"]+)">>},\d+\}/
+
       def self.file_patterns
-        ["mix.exs", "mix.lock", "gleam.toml", "manifest.toml"]
+        ["mix.exs", "mix.lock", "gleam.toml", "manifest.toml", "rebar.lock"]
       end
 
       def self.mapping
@@ -32,6 +35,10 @@ module Bibliothecary
             kind: "lockfile",
             parser: :parse_gleam_manifest,
             content_matcher: :gleam_manifest?,
+          },
+          match_filename("rebar.lock") => {
+            kind: "lockfile",
+            parser: :parse_rebar_lock,
           },
         }
       end
@@ -132,6 +139,23 @@ module Bibliothecary
             platform: platform_name,
             name: pkg["name"],
             requirement: pkg["version"],
+            type: "runtime",
+            source: source
+          )
+        end
+
+        ParserResult.new(dependencies: deps)
+      end
+
+      def self.parse_rebar_lock(file_contents, options: {})
+        source = options.fetch(:filename, "rebar.lock")
+        deps = []
+
+        file_contents.scan(REBAR_LOCK_REGEXP) do |name, version|
+          deps << Dependency.new(
+            platform: platform_name,
+            name: name,
+            requirement: version,
             type: "runtime",
             source: source
           )

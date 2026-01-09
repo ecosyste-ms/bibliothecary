@@ -125,6 +125,7 @@ All available config options are in: https://github.com/ecosyste-ms/bibliothecar
   - mix.lock
   - gleam.toml
   - manifest.toml
+  - rebar.lock
 - Homebrew
   - Brewfile
   - Brewfile.lock.json
