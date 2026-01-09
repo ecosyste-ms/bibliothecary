@@ -16,6 +16,7 @@ module Bibliothecary
           match_filename("project.clj") => {
             kind: "manifest",
             parser: :parse_manifest,
+            can_have_lockfile: false,
           },
         }
       end

@@ -14,7 +14,7 @@ module Bibliothecary
           match_filename("bentofile.yaml") => {
             kind: 'manifest',
             parser: :parse_bentofile,
-            related_to: [ 'manifest' ]
+            can_have_lockfile: false,
           }
         }
       end

@@ -18,10 +18,12 @@ module Bibliothecary
           match_filename("dub.json") => {
             kind: "manifest",
             parser: :parse_json_manifest,
+            can_have_lockfile: false,
           },
           match_filename("dub.sdl") => {
             kind: "manifest",
             parser: :parse_sdl_manifest,
+            can_have_lockfile: false,
           },
         }
       end

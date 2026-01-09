@@ -14,7 +14,7 @@ module Bibliothecary
           match_filename("dvc.yaml") => {
             kind: 'manifest',
             parser: :parse_dvc_yaml,
-            related_to: [ 'manifest' ]
+            can_have_lockfile: false,
           }
         }
       end

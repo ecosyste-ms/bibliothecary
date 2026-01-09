@@ -14,6 +14,7 @@ module Bibliothecary
           match_extension(".rockspec") => {
             kind: "manifest",
             parser: :parse_rockspec,
+            can_have_lockfile: false,
           },
         }
       end

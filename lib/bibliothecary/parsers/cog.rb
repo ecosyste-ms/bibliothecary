@@ -14,7 +14,7 @@ module Bibliothecary
           match_filename("cog.yaml") => {
             kind: 'manifest',
             parser: :parse_cog_yaml,
-            related_to: [ 'manifest' ]
+            can_have_lockfile: false,
           }
         }
       end

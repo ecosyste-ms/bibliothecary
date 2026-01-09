@@ -18,6 +18,7 @@ module Bibliothecary
           match_extension(".nimble") => {
             kind: "manifest",
             parser: :parse_nimble,
+            can_have_lockfile: false,
           },
         }
       end

@@ -16,10 +16,12 @@ module Bibliothecary
           match_filename("environment.yml") => {
             parser: :parse_conda,
             kind: "manifest",
+            can_have_lockfile: false,
           },
           match_filename("environment.yaml") => {
             parser: :parse_conda,
             kind: "manifest",
+            can_have_lockfile: false,
           },
         }
       end

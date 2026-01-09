@@ -14,7 +14,7 @@ module Bibliothecary
           match_filename("Modelfile") => {
             kind: 'manifest',
             parser: :parse_modelfile,
-            related_to: [ 'manifest' ]
+            can_have_lockfile: false,
           }
         }
       end

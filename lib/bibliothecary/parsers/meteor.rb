@@ -16,6 +16,7 @@ module Bibliothecary
           match_filename("versions.json") => {
             kind: "manifest",
             parser: :parse_manifest,
+            can_have_lockfile: false,
           },
         }
       end
