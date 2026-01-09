@@ -194,4 +194,25 @@ describe Bibliothecary::Parsers::Hackage do
   it "matches stack.yaml.lock filepath" do
     expect(described_class.match?("stack.yaml.lock")).to be_truthy
   end
+
+  it "parses dependencies from cabal.project.freeze" do
+    expect(described_class.analyse_contents("cabal.project.freeze", load_fixture("cabal.project.freeze"))).to eq({
+      platform: "hackage",
+      path: "cabal.project.freeze",
+      project_name: nil,
+      dependencies: [
+        Bibliothecary::Dependency.new(platform: "hackage", name: "Cabal", requirement: "3.12.0.0", type: "runtime", source: "cabal.project.freeze"),
+        Bibliothecary::Dependency.new(platform: "hackage", name: "aeson", requirement: "2.2.3.0", type: "runtime", source: "cabal.project.freeze"),
+        Bibliothecary::Dependency.new(platform: "hackage", name: "base", requirement: "4.18.2.1", type: "runtime", source: "cabal.project.freeze"),
+        Bibliothecary::Dependency.new(platform: "hackage", name: "bytestring", requirement: "0.11.5.3", type: "runtime", source: "cabal.project.freeze"),
+        Bibliothecary::Dependency.new(platform: "hackage", name: "text", requirement: "2.0.2", type: "runtime", source: "cabal.project.freeze"),
+      ],
+      kind: "lockfile",
+      success: true,
+    })
+  end
+
+  it "matches cabal.project.freeze filepath" do
+    expect(described_class.match?("cabal.project.freeze")).to be_truthy
+  end
 end

@@ -16,7 +16,7 @@ module Bibliothecary
       STACK_LOCK_REGEXP = /hackage:\s*([a-zA-Z0-9-]+)-([0-9.]+)@/
 
       def self.file_patterns
-        ["*.cabal", "*cabal.config", "stack.yaml.lock"]
+        ["*.cabal", "*cabal.config", "stack.yaml.lock", "cabal.project.freeze"]
       end
 
       def self.mapping
@@ -32,6 +32,10 @@ module Bibliothecary
           match_filename("stack.yaml.lock") => {
             kind: "lockfile",
             parser: :parse_stack_yaml_lock,
+          },
+          match_filename("cabal.project.freeze") => {
+            kind: "lockfile",
+            parser: :parse_cabal_project_freeze,
           },
         }
       end
@@ -187,6 +191,53 @@ module Bibliothecary
 
         file_contents.each_line do |line|
           match = line.match(STACK_LOCK_REGEXP)
+          next unless match
+
+          deps << Dependency.new(
+            platform: platform_name,
+            name: match[1],
+            requirement: match[2],
+            type: "runtime",
+            source: source
+          )
+        end
+
+        ParserResult.new(dependencies: deps)
+      end
+
+      def self.parse_cabal_project_freeze(file_contents, options: {})
+        source = options.fetch(:filename, "cabal.project.freeze")
+        deps = []
+
+        # Parse constraints field which can span multiple lines
+        # Format: constraints: any.pkg ==version, any.pkg2 ==version2, ...
+        # Also handles flag constraints like: any.pkg +flag -flag2
+        constraints = nil
+        file_contents.each_line do |line|
+          if line =~ /^constraints:\s*(.*)/i
+            constraints = $1.strip
+          elsif line =~ /^\s+(.*)/ && constraints
+            constraints += " " + $1.strip
+          elsif line =~ /^[a-z]/i && constraints
+            break
+          end
+        end
+
+        return ParserResult.new(dependencies: []) unless constraints
+
+        constraints.split(",").each do |dep_str|
+          dep_str = dep_str.strip
+          next if dep_str.empty?
+
+          # Format: any.package ==version or any.package +flag -flag
+          # Skip flag-only entries (no version constraint)
+          next unless dep_str.include?("==")
+
+          # Remove "any." prefix and parse
+          dep_str = dep_str.sub(/^any\./, "")
+
+          # Extract name and version: "package ==version" or "package ==version +flag"
+          match = dep_str.match(/^([a-zA-Z][a-zA-Z0-9-]*)\s*==\s*([\d.]+)/)
           next unless match
 
           deps << Dependency.new(

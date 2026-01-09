@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Gleam support in Hex parser for gleam.toml and manifest.toml
 - Rebar3 support in Hex parser for rebar.lock
 - Julia Project.toml and Manifest.toml support
+- Hackage cabal.project.freeze support
 
 ### Changed
 

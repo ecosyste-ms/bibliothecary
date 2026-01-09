@@ -118,6 +118,7 @@ All available config options are in: https://github.com/ecosyste-ms/bibliothecar
   - \*.cabal
   - \*cabal.config
   - stack.yaml.lock
+  - cabal.project.freeze
 - Haxelib
   - haxelib.json
 - Hex
