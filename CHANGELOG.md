@@ -9,16 +9,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+### Changed
+
+### Removed
+
+## [15.2.0]
+
+### Added
+
 - Deno parser for deno.json, deno.jsonc, and deno.lock files (supports npm: and jsr: specifiers)
 - Nix parser for flake.nix, flake.lock, nix/sources.json (niv), and npins/sources.json (npins)
 - Gleam support in Hex parser for gleam.toml and manifest.toml
 - Rebar3 support in Hex parser for rebar.lock
 - Julia Project.toml and Manifest.toml support
 - Hackage cabal.project.freeze support
-
-### Changed
-
-### Removed
 
 ## [15.1.1]
 
