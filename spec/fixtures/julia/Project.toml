@@ -1,0 +1,13 @@
+name = "MyProject"
+uuid = "12345678-1234-1234-1234-123456789abc"
+version = "0.1.0"
+
+[deps]
+JSON = "682c06a0-de6a-54ab-a142-c8b1cf79cde6"
+HTTP = "cd3eb016-35fb-5094-929b-558a96fad6f3"
+Dates = "ade2ca70-3891-5945-98fb-dc099432e06a"
+
+[compat]
+julia = "1.6"
+JSON = "0.21"
+HTTP = "1.0"

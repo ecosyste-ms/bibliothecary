@@ -40,7 +40,39 @@ describe Bibliothecary::Parsers::Julia do
                                                                                        })
   end
 
+  it "parses dependencies from Project.toml" do
+    expect(described_class.analyse_contents("Project.toml", load_fixture("julia/Project.toml"))).to eq({
+      platform: "julia",
+      path: "Project.toml",
+      project_name: nil,
+      dependencies: [
+        Bibliothecary::Dependency.new(platform: "julia", name: "JSON", requirement: "*", type: "runtime", source: "Project.toml"),
+        Bibliothecary::Dependency.new(platform: "julia", name: "HTTP", requirement: "*", type: "runtime", source: "Project.toml"),
+        Bibliothecary::Dependency.new(platform: "julia", name: "Dates", requirement: "*", type: "runtime", source: "Project.toml"),
+      ],
+      kind: "manifest",
+      success: true,
+    })
+  end
+
+  it "parses dependencies from Manifest.toml" do
+    expect(described_class.analyse_contents("Manifest.toml", load_fixture("julia/Manifest.toml"))).to eq({
+      platform: "julia",
+      path: "Manifest.toml",
+      project_name: nil,
+      dependencies: [
+        Bibliothecary::Dependency.new(platform: "julia", name: "Dates", requirement: "1.11.0", type: "runtime", source: "Manifest.toml"),
+        Bibliothecary::Dependency.new(platform: "julia", name: "HTTP", requirement: "1.5.0", type: "runtime", source: "Manifest.toml"),
+        Bibliothecary::Dependency.new(platform: "julia", name: "JSON", requirement: "0.21.4", type: "runtime", source: "Manifest.toml"),
+      ],
+      kind: "lockfile",
+      success: true,
+    })
+  end
+
   it "matches valid manifest filepaths" do
     expect(described_class.match?("REQUIRE")).to be_truthy
+    expect(described_class.match?("Project.toml")).to be_truthy
+    expect(described_class.match?("Manifest.toml")).to be_truthy
   end
 end

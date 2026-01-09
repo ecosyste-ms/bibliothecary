@@ -131,6 +131,8 @@ All available config options are in: https://github.com/ecosyste-ms/bibliothecar
   - Brewfile.lock.json
 - Julia
   - REQUIRE
+  - Project.toml
+  - Manifest.toml
 - LuaRocks
   - \*.rockspec
 - Maven
