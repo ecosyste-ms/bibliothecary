@@ -507,6 +507,38 @@ describe Bibliothecary::Parsers::NPM do
                          })
   end
 
+  it "parses dependencies from pnpm-workspace.yaml with catalog" do
+    result = described_class.analyse_contents("pnpm-workspace.yaml", load_fixture("pnpm-workspace.yaml"))
+
+    expect(result).to eq({
+                           platform: "npm",
+                           path: "pnpm-workspace.yaml",
+                           dependencies: [
+                             Bibliothecary::Dependency.new(platform: "npm", name: "react", requirement: "^18.3.1", type: "runtime", source: "pnpm-workspace.yaml"),
+                             Bibliothecary::Dependency.new(platform: "npm", name: "react-dom", requirement: "^18.3.1", type: "runtime", source: "pnpm-workspace.yaml"),
+                             Bibliothecary::Dependency.new(platform: "npm", name: "typescript", requirement: "^5.0.0", type: "runtime", source: "pnpm-workspace.yaml"),
+                             Bibliothecary::Dependency.new(platform: "npm", name: "react", requirement: "^17.0.2", type: "runtime", source: "pnpm-workspace.yaml"),
+                             Bibliothecary::Dependency.new(platform: "npm", name: "react-dom", requirement: "^17.0.2", type: "runtime", source: "pnpm-workspace.yaml"),
+                           ],
+                           kind: "manifest",
+                           project_name: nil,
+                           success: true,
+                         })
+  end
+
+  it "returns empty dependencies for pnpm-workspace.yaml without catalog" do
+    result = described_class.analyse_contents("pnpm-workspace.yaml", load_fixture("pnpm-workspace-no-catalog.yaml"))
+
+    expect(result).to eq({
+                           platform: "npm",
+                           path: "pnpm-workspace.yaml",
+                           dependencies: [],
+                           kind: "manifest",
+                           project_name: nil,
+                           success: true,
+                         })
+  end
+
   it "parses git dependencies from package.json" do
     expect(described_class.analyse_contents("package.json", load_fixture("yarn-with-git-repo/package.json"))).to eq({
                                                                                                                       platform: "npm",

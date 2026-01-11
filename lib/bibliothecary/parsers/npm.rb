@@ -11,7 +11,7 @@ module Bibliothecary
       PACKAGE_LOCK_JSON_MAX_DEPTH = 10
 
       def self.file_patterns
-        ["package.json", "package-lock.json", "npm-shrinkwrap.json", "yarn.lock", "pnpm-lock.yaml", "bun.lock", "npm-ls.json"]
+        ["package.json", "package-lock.json", "npm-shrinkwrap.json", "yarn.lock", "pnpm-lock.yaml", "pnpm-workspace.yaml", "bun.lock", "npm-ls.json"]
       end
 
       def self.mapping
@@ -31,6 +31,11 @@ module Bibliothecary
           match_filename("pnpm-lock.yaml") => {
             kind: "lockfile",
             parser: :parse_pnpm_lock,
+          },
+          match_filename("pnpm-workspace.yaml") => {
+            kind: "manifest",
+            parser: :parse_pnpm_workspace,
+            related_to: ["lockfile"],
           },
           match_filename("npm-ls.json") => {
             kind: "lockfile",
@@ -392,6 +397,45 @@ module Bibliothecary
                        else # v9+
                          parse_v9_pnpm_lock(parsed, options.fetch(:filename, nil))
                        end
+        ParserResult.new(dependencies: dependencies)
+      end
+
+      def self.parse_pnpm_workspace(contents, options: {})
+        parsed = YAML.load(contents)
+        source = options.fetch(:filename, nil)
+
+        dependencies = []
+
+        # Parse the default catalog (pnpm 9+)
+        if parsed["catalog"].is_a?(Hash)
+          parsed["catalog"].each do |name, requirement|
+            dependencies << Dependency.new(
+              name: name,
+              requirement: requirement,
+              type: "runtime",
+              source: source,
+              platform: platform_name
+            )
+          end
+        end
+
+        # Parse named catalogs (pnpm 9+)
+        if parsed["catalogs"].is_a?(Hash)
+          parsed["catalogs"].each do |_catalog_name, catalog_deps|
+            next unless catalog_deps.is_a?(Hash)
+
+            catalog_deps.each do |name, requirement|
+              dependencies << Dependency.new(
+                name: name,
+                requirement: requirement,
+                type: "runtime",
+                source: source,
+                platform: platform_name
+              )
+            end
+          end
+        end
+
         ParserResult.new(dependencies: dependencies)
       end
 

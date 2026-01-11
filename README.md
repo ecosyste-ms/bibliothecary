@@ -165,6 +165,7 @@ All available config options are in: https://github.com/ecosyste-ms/bibliothecar
   - npm-shrinkwrap.json
   - yarn.lock
   - pnpm-lock.yaml
+  - pnpm-workspace.yaml
   - bun.lock
   - npm-ls.json
 - Nuget
