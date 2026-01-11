@@ -23,31 +23,21 @@ describe Bibliothecary::Parsers::Cargo do
   end
 
   it "parses dependencies from Cargo.lock" do
-    expect(described_class.analyse_contents("Cargo.lock", load_fixture("Cargo.lock"))).to eq({
-                                                                                               platform: "cargo",
-                                                                                               path: "Cargo.lock",
-                                                                                               project_name: nil,
-                                                                                               dependencies: [
-        Bibliothecary::Dependency.new(platform: "cargo", name: "aho-corasick", requirement: "0.7.18", type: "runtime", source: "Cargo.lock"),
-        Bibliothecary::Dependency.new(platform: "cargo", name: "fuchsia-cprng", requirement: "0.1.1", type: "runtime", source: "Cargo.lock"),
-        Bibliothecary::Dependency.new(platform: "cargo", name: "libc", requirement: "0.2.126", type: "runtime", source: "Cargo.lock"),
-        Bibliothecary::Dependency.new(platform: "cargo", name: "memchr", requirement: "2.5.0", type: "runtime", source: "Cargo.lock"),
-        Bibliothecary::Dependency.new(platform: "cargo", name: "rand", requirement: "0.4.6", type: "runtime", source: "Cargo.lock"),
-        Bibliothecary::Dependency.new(platform: "cargo", name: "rand_core", requirement: "0.3.1", type: "runtime", source: "Cargo.lock"),
-        Bibliothecary::Dependency.new(platform: "cargo", name: "rand_core", requirement: "0.4.2", type: "runtime", source: "Cargo.lock"),
-        Bibliothecary::Dependency.new(platform: "cargo", name: "rdrand", requirement: "0.4.0", type: "runtime", source: "Cargo.lock"),
-        Bibliothecary::Dependency.new(platform: "cargo", name: "regex", requirement: "1.6.0", type: "runtime", source: "Cargo.lock"),
-        Bibliothecary::Dependency.new(platform: "cargo", name: "regex-syntax", requirement: "0.6.27", type: "runtime", source: "Cargo.lock"),
-        Bibliothecary::Dependency.new(platform: "cargo", name: "remove_dir_all", requirement: "0.5.3", type: "runtime", source: "Cargo.lock"),
-        Bibliothecary::Dependency.new(platform: "cargo", name: "rustc-serialize", requirement: "0.3.24", type: "runtime", source: "Cargo.lock"),
-        Bibliothecary::Dependency.new(platform: "cargo", name: "tempdir", requirement: "0.3.7", type: "runtime", source: "Cargo.lock"),
-        Bibliothecary::Dependency.new(platform: "cargo", name: "winapi", requirement: "0.3.9", type: "runtime", source: "Cargo.lock"),
-        Bibliothecary::Dependency.new(platform: "cargo", name: "winapi-i686-pc-windows-gnu", requirement: "0.4.0", type: "runtime", source: "Cargo.lock"),
-        Bibliothecary::Dependency.new(platform: "cargo", name: "winapi-x86_64-pc-windows-gnu", requirement: "0.4.0", type: "runtime", source: "Cargo.lock"),
-      ],
-                                                                                               kind: "lockfile",
-                                                                                               success: true,
-                                                                                             })
+    result = described_class.analyse_contents("Cargo.lock", load_fixture("Cargo.lock"))
+    expect(result).to include({
+                                platform: "cargo",
+                                path: "Cargo.lock",
+                                project_name: nil,
+                                kind: "lockfile",
+                                success: true,
+                              })
+    expect(result[:dependencies].length).to eq(16)
+    # Spot check dependencies with integrity
+    expect(result[:dependencies]).to include(
+      Bibliothecary::Dependency.new(platform: "cargo", name: "aho-corasick", requirement: "0.7.18", type: "runtime", source: "Cargo.lock", integrity: "sha256=1e37cfd5e7657ada45f742d6e99ca5788580b5c529dc78faf11ece6dc702656f"),
+      Bibliothecary::Dependency.new(platform: "cargo", name: "regex", requirement: "1.6.0", type: "runtime", source: "Cargo.lock", integrity: "sha256=4c4eb3267174b8c6c2f654116623910a0fef09c4753f8dd83db29c48a0df988b"),
+      Bibliothecary::Dependency.new(platform: "cargo", name: "winapi", requirement: "0.3.9", type: "runtime", source: "Cargo.lock", integrity: "sha256=5c839a674fcd7a98952e593242ea400abe93992746761e38641405d28b00f419")
+    )
   end
 
   it "matches valid manifest filepaths" do

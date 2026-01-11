@@ -131,12 +131,16 @@ module Bibliothecary
           name = block[/name\s*=\s*"([^"]+)"/, 1]
           version = block[/version\s*=\s*"([^"]+)"/, 1]
 
+          # Extract sdist hash: sdist = { url = "...", hash = "sha256:...", size = ... }
+          integrity = block[/^sdist\s*=\s*\{[^}]*hash\s*=\s*"([^"]+)"/m, 1]
+
           dependencies << Dependency.new(
             platform: platform_name,
             name: name,
             requirement: version,
             type: "runtime", # All dependencies are considered runtime
-            source: source
+            source: source,
+            integrity: integrity
           )
         end
         ParserResult.new(dependencies: dependencies)
@@ -306,6 +310,15 @@ module Bibliothecary
 
           groups = ["runtime"] if groups.empty?
 
+          # Extract sdist hash from files array (look for .tar.gz entry)
+          integrity = nil
+          if (files_match = block[/^files\s*=\s*\[(.*?)\]/m, 1])
+            # Match .tar.gz file entry and extract hash
+            if (sdist_match = files_match.match(/\{file\s*=\s*"[^"]+\.tar\.gz",\s*hash\s*=\s*"([^"]+)"\}/))
+              integrity = sdist_match[1]
+            end
+          end
+
           groups.each do |group|
             # Poetry lockfiles should already contain normalized names, but we'll
             # apply it here as well just to be consistent with pyproject.toml parsing.
@@ -316,7 +329,8 @@ module Bibliothecary
               requirement: version,
               type: group,
               source: options.fetch(:filename, nil),
-              platform: platform_name
+              platform: platform_name,
+              integrity: integrity
             )
           end
         end

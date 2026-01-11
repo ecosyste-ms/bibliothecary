@@ -209,10 +209,12 @@ module Bibliothecary
             requirement: match[2].strip.split("/").first,
             type: "runtime",
             source: options.fetch(:filename, nil),
-            platform: platform_name
+            platform: platform_name,
+            integrity: match[3].strip
           )
         end
-        dependencies = deps.uniq
+        # Dedupe by name+requirement, keeping the first occurrence (h1 hash, not go.mod hash)
+        dependencies = deps.uniq { |d| [d.name, d.requirement] }
         ParserResult.new(dependencies: dependencies)
       end
 

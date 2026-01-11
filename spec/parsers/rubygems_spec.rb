@@ -100,6 +100,23 @@ describe Bibliothecary::Parsers::Rubygems do
     expect(result[:dependencies]).to include(Bibliothecary::Dependency.new(platform: "rubygems", name: "bundler", requirement: "2.3.19", type: "runtime", source: "Gemfile.lock"))
   end
 
+  it "parses checksums from Gemfile.lock with CHECKSUMS section" do
+    result = described_class.analyse_contents("Gemfile.lock", load_fixture("Gemfile-with-checksums.lock"))
+    expect(result).to include(
+      platform: "rubygems",
+      path: "Gemfile.lock",
+      kind: "lockfile",
+      project_name: nil,
+      success: true
+    )
+
+    expect(result[:dependencies]).to include(
+      Bibliothecary::Dependency.new(platform: "rubygems", name: "builder", requirement: "3.3.0", type: "runtime", source: "Gemfile.lock", integrity: "sha256=497918d2f9dca528fdca4b88d84e4ef4387256d984b8154e9d5d3fe5a9c8835f"),
+      Bibliothecary::Dependency.new(platform: "rubygems", name: "rake", requirement: "13.2.1", type: "runtime", source: "Gemfile.lock", integrity: "sha256=46cb38dae65d7d74b6020a4ac9d48afed8eb8149c040eccf0523bec91907059d"),
+      Bibliothecary::Dependency.new(platform: "rubygems", name: "bundler", requirement: "2.6.2", type: "runtime", source: "Gemfile.lock", integrity: "sha256=9e0c09d351d7b8bc1ceb11a15d8ca6f3dc6cbecc77ae99e27c3ec8b656f7f5ca")
+    )
+  end
+
   it "parses dependencies from Gemfile.lock with windows line endings" do
     fixture = load_fixture("GemfileLineEndings.lock")
     # If this fails, the line endings changed, on this file.

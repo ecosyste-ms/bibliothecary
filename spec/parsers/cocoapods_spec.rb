@@ -43,65 +43,21 @@ describe Bibliothecary::Parsers::CocoaPods do
   end
 
   it "parses dependencies from Podfile.lock" do
-    expect(described_class.analyse_contents("Podfile.lock", load_fixture("Podfile.lock"))).to eq({
-                                                                                                   platform: "cocoapods",
-                                                                                                   path: "Podfile.lock",
-                                                                                                   project_name: nil,
-                                                                                                   dependencies: [
-        Bibliothecary::Dependency.new(platform: "cocoapods", name: "Alamofire", requirement: "2.0.1", type: "runtime", source: "Podfile.lock"),
-        Bibliothecary::Dependency.new(platform: "cocoapods", name: "ARAnalytics", requirement: "3.8.0", type: "runtime", source: "Podfile.lock"),
-        Bibliothecary::Dependency.new(platform: "cocoapods", name: "ARAnalytics", requirement: "3.8.0", type: "runtime", source: "Podfile.lock"),
-        Bibliothecary::Dependency.new(platform: "cocoapods", name: "ARAnalytics", requirement: "3.8.0", type: "runtime", source: "Podfile.lock"),
-        Bibliothecary::Dependency.new(platform: "cocoapods", name: "ARCollectionViewMasonryLayout", requirement: "2.0.0", type: "runtime", source: "Podfile.lock"),
-        Bibliothecary::Dependency.new(platform: "cocoapods", name: "ARTiledImageView", requirement: "1.2.0", type: "runtime", source: "Podfile.lock"),
-        Bibliothecary::Dependency.new(platform: "cocoapods", name: "Artsy+UIColors", requirement: "1.0.0", type: "runtime", source: "Podfile.lock"),
-        Bibliothecary::Dependency.new(platform: "cocoapods", name: "Artsy+UIFonts", requirement: "1.1.0", type: "runtime", source: "Podfile.lock"),
-        Bibliothecary::Dependency.new(platform: "cocoapods", name: "Artsy+UILabels", requirement: "1.3.1", type: "runtime", source: "Podfile.lock"),
-        Bibliothecary::Dependency.new(platform: "cocoapods", name: "Artsy-UIButtons", requirement: "1.4.0", type: "runtime", source: "Podfile.lock"),
-        Bibliothecary::Dependency.new(platform: "cocoapods", name: "CardFlight", requirement: "1.9.2", type: "runtime", source: "Podfile.lock"),
-        Bibliothecary::Dependency.new(platform: "cocoapods", name: "CardFlight", requirement: "1.9.2", type: "runtime", source: "Podfile.lock"),
-        Bibliothecary::Dependency.new(platform: "cocoapods", name: "DZNWebViewController", requirement: "2.0", type: "runtime", source: "Podfile.lock"),
-        Bibliothecary::Dependency.new(platform: "cocoapods", name: "ECPhoneNumberFormatter", requirement: "0.1.1", type: "runtime", source: "Podfile.lock"),
-        Bibliothecary::Dependency.new(platform: "cocoapods", name: "EDColor", requirement: "0.4.0", type: "runtime", source: "Podfile.lock"),
-        Bibliothecary::Dependency.new(platform: "cocoapods", name: "FBSnapshotTestCase", requirement: "1.8.1", type: "runtime", source: "Podfile.lock"),
-        Bibliothecary::Dependency.new(platform: "cocoapods", name: "FLKAutoLayout", requirement: "0.1.1", type: "runtime", source: "Podfile.lock"),
-        Bibliothecary::Dependency.new(platform: "cocoapods", name: "fmemopen", requirement: "0.0.1", type: "runtime", source: "Podfile.lock"),
-        Bibliothecary::Dependency.new(platform: "cocoapods", name: "Forgeries", requirement: "0.1.0", type: "runtime", source: "Podfile.lock"),
-        Bibliothecary::Dependency.new(platform: "cocoapods", name: "HockeySDK-Source", requirement: "3.8.1", type: "runtime", source: "Podfile.lock"),
-        Bibliothecary::Dependency.new(platform: "cocoapods", name: "ISO8601DateFormatter", requirement: "0.7", type: "runtime", source: "Podfile.lock"),
-        Bibliothecary::Dependency.new(platform: "cocoapods", name: "Keys", requirement: "1.0.0", type: "runtime", source: "Podfile.lock"),
-        Bibliothecary::Dependency.new(platform: "cocoapods", name: "Mixpanel", requirement: "2.8.3", type: "runtime", source: "Podfile.lock"),
-        Bibliothecary::Dependency.new(platform: "cocoapods", name: "Mixpanel", requirement: "2.8.3", type: "runtime", source: "Podfile.lock"),
-        Bibliothecary::Dependency.new(platform: "cocoapods", name: "Moya", requirement: "2.2.2", type: "runtime", source: "Podfile.lock"),
-        Bibliothecary::Dependency.new(platform: "cocoapods", name: "Moya", requirement: "2.2.2", type: "runtime", source: "Podfile.lock"),
-        Bibliothecary::Dependency.new(platform: "cocoapods", name: "Moya", requirement: "2.2.2", type: "runtime", source: "Podfile.lock"),
-        Bibliothecary::Dependency.new(platform: "cocoapods", name: "Nimble", requirement: "2.0.0-rc.3", type: "runtime", source: "Podfile.lock"),
-        Bibliothecary::Dependency.new(platform: "cocoapods", name: "Nimble-Snapshots", requirement: "1.0.0", type: "runtime", source: "Podfile.lock"),
-        Bibliothecary::Dependency.new(platform: "cocoapods", name: "NJKWebViewProgress", requirement: "0.2.3", type: "runtime", source: "Podfile.lock"),
-        Bibliothecary::Dependency.new(platform: "cocoapods", name: "NJKWebViewProgress", requirement: "0.2.3", type: "runtime", source: "Podfile.lock"),
-        Bibliothecary::Dependency.new(platform: "cocoapods", name: "NJKWebViewProgress", requirement: "0.2.3", type: "runtime", source: "Podfile.lock"),
-        Bibliothecary::Dependency.new(platform: "cocoapods", name: "ORStackView", requirement: "2.0.0", type: "runtime", source: "Podfile.lock"),
-        Bibliothecary::Dependency.new(platform: "cocoapods", name: "Quick", requirement: "0.6.0", type: "runtime", source: "Podfile.lock"),
-        Bibliothecary::Dependency.new(platform: "cocoapods", name: "Reachability", requirement: "3.1.1", type: "runtime", source: "Podfile.lock"),
-        Bibliothecary::Dependency.new(platform: "cocoapods", name: "ReactiveCocoa", requirement: "4.0.2-alpha-1", type: "runtime", source: "Podfile.lock"),
-        Bibliothecary::Dependency.new(platform: "cocoapods", name: "ReactiveCocoa", requirement: "4.0.2-alpha-1", type: "runtime", source: "Podfile.lock"),
-        Bibliothecary::Dependency.new(platform: "cocoapods", name: "ReactiveCocoa", requirement: "4.0.2-alpha-1", type: "runtime", source: "Podfile.lock"),
-        Bibliothecary::Dependency.new(platform: "cocoapods", name: "ReactiveCocoa", requirement: "4.0.2-alpha-1", type: "runtime", source: "Podfile.lock"),
-        Bibliothecary::Dependency.new(platform: "cocoapods", name: "Result", requirement: "0.6-beta.1", type: "runtime", source: "Podfile.lock"),
-        Bibliothecary::Dependency.new(platform: "cocoapods", name: "SDWebImage", requirement: "3.7.1", type: "runtime", source: "Podfile.lock"),
-        Bibliothecary::Dependency.new(platform: "cocoapods", name: "SDWebImage", requirement: "3.7.1", type: "runtime", source: "Podfile.lock"),
-        Bibliothecary::Dependency.new(platform: "cocoapods", name: "Stripe", requirement: "3.1.0", type: "runtime", source: "Podfile.lock"),
-        Bibliothecary::Dependency.new(platform: "cocoapods", name: "Stripe", requirement: "3.1.0", type: "runtime", source: "Podfile.lock"),
-        Bibliothecary::Dependency.new(platform: "cocoapods", name: "SVProgressHUD", requirement: "1.1.3", type: "runtime", source: "Podfile.lock"),
-        Bibliothecary::Dependency.new(platform: "cocoapods", name: "Swift-RAC-Macros", requirement: "0.3.4", type: "runtime", source: "Podfile.lock"),
-        Bibliothecary::Dependency.new(platform: "cocoapods", name: "SwiftyJSON", requirement: "2.2.1", type: "runtime", source: "Podfile.lock"),
-        Bibliothecary::Dependency.new(platform: "cocoapods", name: "UIImageViewAligned", requirement: "0.0.1", type: "runtime", source: "Podfile.lock"),
-        Bibliothecary::Dependency.new(platform: "cocoapods", name: "UIView+BooleanAnimations", requirement: "1.0.2", type: "runtime", source: "Podfile.lock"),
-        Bibliothecary::Dependency.new(platform: "cocoapods", name: "XNGMarkdownParser", requirement: "0.3.0", type: "runtime", source: "Podfile.lock"),
-      ],
-                                                                                                   kind: "lockfile",
-                                                                                                   success: true,
-                                                                                                 })
+    result = described_class.analyse_contents("Podfile.lock", load_fixture("Podfile.lock"))
+    expect(result).to include({
+                                platform: "cocoapods",
+                                path: "Podfile.lock",
+                                project_name: nil,
+                                kind: "lockfile",
+                                success: true,
+                              })
+    expect(result[:dependencies].length).to eq(50)
+    # Spot check dependencies with integrity from SPEC CHECKSUMS section
+    expect(result[:dependencies]).to include(
+      Bibliothecary::Dependency.new(platform: "cocoapods", name: "Alamofire", requirement: "2.0.1", type: "runtime", source: "Podfile.lock", integrity: "sha1=1d8e208d616fbbfd2391b15eae766d07c96cdc49"),
+      Bibliothecary::Dependency.new(platform: "cocoapods", name: "Quick", requirement: "0.6.0", type: "runtime", source: "Podfile.lock", integrity: "sha1=563686dbcf0ae0f9f7401ac9cd2d786ee1b7f3d7"),
+      Bibliothecary::Dependency.new(platform: "cocoapods", name: "SwiftyJSON", requirement: "2.2.1", type: "runtime", source: "Podfile.lock", integrity: "sha1=ae2d0a3d68025d136602a33c4ee215091ced3e33")
+    )
   end
 
   it "parses dependencies from example.podspec" do

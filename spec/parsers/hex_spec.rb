@@ -31,8 +31,14 @@ describe Bibliothecary::Parsers::Hex do
     deps = result[:dependencies]
     expect(deps.length).to eq(5)
     expect(deps.map(&:name)).to match_array(%w[cowboy cowlib plug poison ranch])
-    expect(deps.find { |d| d.name == "cowboy" }.requirement).to eq("1.0.4")
-    expect(deps.find { |d| d.name == "ranch" }.requirement).to eq("1.2.1")
+
+    cowboy = deps.find { |d| d.name == "cowboy" }
+    expect(cowboy.requirement).to eq("1.0.4")
+    expect(cowboy.integrity).to eq("sha256=a324a8df9f2316c833a470d918aaf73ae894278b8aa6226ce7a9bf699388f878")
+
+    ranch = deps.find { |d| d.name == "ranch" }
+    expect(ranch.requirement).to eq("1.2.1")
+    expect(ranch.integrity).to eq("sha256=a6fb992c10f2187b46ffd17ce398ddf8a54f691b81768f9ef5f461ea7e28c762")
   end
 
   it "parses dependencies from gleam.toml" do
@@ -55,9 +61,9 @@ describe Bibliothecary::Parsers::Hex do
       platform: "hex",
       path: "manifest.toml",
       dependencies: [
-        Bibliothecary::Dependency.new(platform: "hex", name: "gleam_stdlib", requirement: "0.60.0", type: "runtime", source: "manifest.toml"),
-        Bibliothecary::Dependency.new(platform: "hex", name: "gleam_http", requirement: "3.7.0", type: "runtime", source: "manifest.toml"),
-        Bibliothecary::Dependency.new(platform: "hex", name: "gleeunit", requirement: "1.5.1", type: "runtime", source: "manifest.toml"),
+        Bibliothecary::Dependency.new(platform: "hex", name: "gleam_stdlib", requirement: "0.60.0", type: "runtime", source: "manifest.toml", integrity: "sha256=621d600bb134bc239cb2537630899817b1a42e60a1d46c5e9f3fae39f88c800b"),
+        Bibliothecary::Dependency.new(platform: "hex", name: "gleam_http", requirement: "3.7.0", type: "runtime", source: "manifest.toml", integrity: "sha256=ea8e8b91de4d2c3d85b9e4e034ec7ce81e7c552e6e1ecf755c399037df173208"),
+        Bibliothecary::Dependency.new(platform: "hex", name: "gleeunit", requirement: "1.5.1", type: "runtime", source: "manifest.toml", integrity: "sha256=d33b7736cf0766ed3065f64a1ebb351e72b2e8de39bafc8ada0e35e92a6a934f"),
       ],
       kind: "lockfile",
       project_name: nil,
@@ -70,9 +76,9 @@ describe Bibliothecary::Parsers::Hex do
       platform: "hex",
       path: "rebar.lock",
       dependencies: [
-        Bibliothecary::Dependency.new(platform: "hex", name: "hex_core", requirement: "0.10.3", type: "runtime", source: "rebar.lock"),
-        Bibliothecary::Dependency.new(platform: "hex", name: "verl", requirement: "1.1.1", type: "runtime", source: "rebar.lock"),
-        Bibliothecary::Dependency.new(platform: "hex", name: "ssl_verify_fun", requirement: "1.1.7", type: "runtime", source: "rebar.lock"),
+        Bibliothecary::Dependency.new(platform: "hex", name: "hex_core", requirement: "0.10.3", type: "runtime", source: "rebar.lock", integrity: "sha256=21e84b3ab21eee6a1eaa56b69624e0d7d82f61f148b4c7441b4692fa2c48e0c1"),
+        Bibliothecary::Dependency.new(platform: "hex", name: "verl", requirement: "1.1.1", type: "runtime", source: "rebar.lock", integrity: "sha256=0925f3708b11cacc6fba2cb35b5efdce78c6e79b9db90a30bd75a3c6fe58a8a5"),
+        Bibliothecary::Dependency.new(platform: "hex", name: "ssl_verify_fun", requirement: "1.1.7", type: "runtime", source: "rebar.lock", integrity: "sha256=fe4c190e8f37401d30167c8c405eda19469f34577987c76dde613e838bbc67f8"),
       ],
       kind: "lockfile",
       project_name: nil,

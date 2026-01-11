@@ -12,8 +12,8 @@ module Bibliothecary
       # Matches build-tool-depends format: package:tool == version
       BUILD_TOOL_REGEXP = /^\s*([a-zA-Z][a-zA-Z0-9-]*):[a-zA-Z][a-zA-Z0-9-]*\s*((?:[<>=!]+\s*[\d.*]+(?:\s*&&\s*[<>=!]+\s*[\d.*]+)*)?)/
 
-      # Matches stack.yaml.lock hackage entries like: hackage: fuzzyset-0.2.4@sha256:...
-      STACK_LOCK_REGEXP = /hackage:\s*([a-zA-Z0-9-]+)-([0-9.]+)@/
+      # Matches stack.yaml.lock hackage entries like: hackage: fuzzyset-0.2.4@sha256:hash,size
+      STACK_LOCK_REGEXP = /hackage:\s*([a-zA-Z0-9-]+)-([0-9.]+)@sha256:([a-f0-9]+)/
 
       def self.file_patterns
         ["*.cabal", "*cabal.config", "stack.yaml.lock", "cabal.project.freeze"]
@@ -198,7 +198,8 @@ module Bibliothecary
             name: match[1],
             requirement: match[2],
             type: "runtime",
-            source: source
+            source: source,
+            integrity: "sha256=#{match[3]}"
           )
         end
 

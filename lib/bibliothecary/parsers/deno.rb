@@ -52,16 +52,30 @@ module Bibliothecary
         manifest = JSON.parse(file_contents)
         source = options.fetch(:filename, nil)
 
+        # Build integrity lookup from jsr and npm sections
+        integrity_map = {}
+        manifest.fetch("jsr", {}).each do |key, value|
+          integrity_map["jsr:#{key}"] = value["integrity"] if value.is_a?(Hash) && value["integrity"]
+        end
+        manifest.fetch("npm", {}).each do |key, value|
+          integrity_map["npm:#{key}"] = value["integrity"] if value.is_a?(Hash) && value["integrity"]
+        end
+
         dependencies = manifest.fetch("specifiers", {}).map do |specifier, resolved_version|
           name, _requirement = parse_specifier(specifier)
           next unless name
+
+          # Determine protocol (npm: or jsr:) and build lookup key
+          protocol = specifier.start_with?("jsr:") ? "jsr" : "npm"
+          integrity_key = "#{protocol}:#{name}@#{resolved_version}"
 
           Dependency.new(
             name: name,
             requirement: resolved_version,
             type: "runtime",
             source: source,
-            platform: platform_name
+            platform: platform_name,
+            integrity: integrity_map[integrity_key]
           )
         end.compact
 

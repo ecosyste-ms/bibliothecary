@@ -104,37 +104,44 @@ describe Bibliothecary::Parsers::Go do
                                       name: "github.com/go-check/check",
                                       requirement: "v0.0.0-20180628173108-788fd7840127",
                                       type: "runtime",
-                                      source: "go.sum"),
+                                      source: "go.sum",
+                                      integrity: "h1:0gkP6mzaMqkmpcJYCFOLkIBwI7xFExG03bbkOkCvUPI="),
         Bibliothecary::Dependency.new(platform: "go",
                                       name: "github.com/gomodule/redigo",
                                       requirement: "v2.0.0+incompatible",
                                       type: "runtime",
-                                      source: "go.sum"),
+                                      source: "go.sum",
+                                      integrity: "h1:K/R+8tc58AaqLkqG2Ol3Qk+DR/TlNuhuh457pBFPtt0="),
         Bibliothecary::Dependency.new(platform: "go",
                                       name: "github.com/kr/pretty",
                                       requirement: "v0.1.0",
                                       type: "runtime",
-                                      source: "go.sum"),
+                                      source: "go.sum",
+                                      integrity: "h1:L/CwN0zerZDmRFUapSPitk6f+Q3+0za1rQkzVuMiMFI="),
         Bibliothecary::Dependency.new(platform: "go",
                                       name: "github.com/kr/pty",
                                       requirement: "v1.1.1",
                                       type: "runtime",
-                                      source: "go.sum"),
+                                      source: "go.sum",
+                                      integrity: "h1:pFQYn66WHrOpPYNljwOMqo10TkYh1fy3cYio2l3bCsQ="),
         Bibliothecary::Dependency.new(platform: "go",
                                       name: "github.com/kr/text",
                                       requirement: "v0.1.0",
                                       type: "runtime",
-                                      source: "go.sum"),
+                                      source: "go.sum",
+                                      integrity: "h1:45sCR5RtlFHMR4UwH9sdQ5TC8v0qDQCHnXt+kaKSTVE="),
         Bibliothecary::Dependency.new(platform: "go",
                                       name: "github.com/replicon/fast-archiver",
                                       requirement: "v0.0.0-20121220195659-060bf9adec25",
                                       type: "runtime",
-                                      source: "go.sum"),
+                                      source: "go.sum",
+                                      integrity: "h1:aq3XSz9htmdvrxpK6eBIbjs3SaN8G1D9RuKkDo4PRnw="),
         Bibliothecary::Dependency.new(platform: "go",
                                       name: "gopkg.in/yaml.v1",
                                       requirement: "v1.0.0-20140924161607-9f9df34309c0",
                                       type: "runtime",
-                                      source: "go.sum"),
+                                      source: "go.sum",
+                                      integrity: "h1:POO/ycCATvegFmVuPpQzZFJ+pGZeX22Ufu6fibxDVjU="),
       ],
                                                                                        kind: "lockfile",
                                                                                        success: true,
@@ -606,6 +613,17 @@ describe Bibliothecary::Parsers::Go do
                                                                                                                                      kind: "lockfile",
                                                                                                                                      success: true,
                                                                                                                                    })
+  end
+
+  it "extracts integrity from go.sum" do
+    result = described_class.analyse_contents("go.sum", load_fixture("go.sum"))
+    deps = result[:dependencies]
+
+    # go.sum has both module hash (h1:...) and go.mod hash lines
+    # After adding integrity, these are no longer deduped
+    go_check = deps.find { |d| d.name == "github.com/go-check/check" && d.integrity&.start_with?("h1:") }
+    expect(go_check).not_to be_nil
+    expect(go_check.integrity).to eq("h1:0gkP6mzaMqkmpcJYCFOLkIBwI7xFExG03bbkOkCvUPI=")
   end
 
   it "matches valid manifest filepaths" do

@@ -32,7 +32,7 @@ describe Bibliothecary::Parsers::Packagist do
         Bibliothecary::Dependency.new(platform: "packagist", name: "doctrine/annotations", requirement: "v1.2.1", type: "runtime", source: "composer.lock"),
         Bibliothecary::Dependency.new(platform: "packagist", name: "doctrine/cache", requirement: "v1.3.1", type: "runtime", source: "composer.lock"),
         Bibliothecary::Dependency.new(platform: "packagist", name: "doctrine/collections", requirement: "v1.2", type: "runtime", source: "composer.lock"),
-        Bibliothecary::Dependency.new(platform: "packagist", name: "drupal/address", requirement: "8.x-1.9", original_requirement: "1.9.0", type: "runtime", source: "composer.lock"),
+        Bibliothecary::Dependency.new(platform: "packagist", name: "drupal/address", requirement: "8.x-1.9", original_requirement: "1.9.0", type: "runtime", source: "composer.lock", integrity: "sha1=c7e6406d88c6d6be9e8fe0091040d67012bdbf05"),
         Bibliothecary::Dependency.new(platform: "packagist", name: "symfony/monolog-bundle", requirement: "v2.6.1", type: "runtime", source: "composer.lock"),
         Bibliothecary::Dependency.new(platform: "packagist", name: "symfony/swiftmailer-bundle", requirement: "v2.3.8", type: "runtime", source: "composer.lock"),
         Bibliothecary::Dependency.new(platform: "packagist", name: "symfony/symfony", requirement: "v2.6.1", type: "runtime", source: "composer.lock"),

@@ -27,42 +27,39 @@ module Bibliothecary
 
       def self.parse_lockfile(file_contents, options: {})
         manifest = JSON.parse file_contents
+        source = options.fetch(:filename, nil)
+
         dependencies = manifest.fetch("packages", []).map do |dependency|
-          requirement = dependency["version"]
-
-          # Store Drupal version if Drupal, but include the original manifest version for reference
-          if drupal_module?(dependency)
-            original_requirement = requirement
-            requirement = dependency.dig("source", "reference")
-          end
-
-          Dependency.new(
-            name: dependency["name"],
-            requirement: requirement,
-            type: "runtime",
-            original_requirement: original_requirement,
-            source: options.fetch(:filename, nil),
-            platform: platform_name
-          )
+          parse_composer_dependency(dependency, "runtime", source)
         end + manifest.fetch("packages-dev", []).map do |dependency|
-          requirement = dependency["version"]
-
-          # Store Drupal version if Drupal, but include the original manifest version for reference
-          if drupal_module?(dependency)
-            original_requirement = requirement
-            requirement = dependency.dig("source", "reference")
-          end
-
-          Dependency.new(
-            name: dependency["name"],
-            requirement: requirement,
-            type: "development",
-            original_requirement: original_requirement,
-            source: options.fetch(:filename, nil),
-            platform: platform_name
-          )
+          parse_composer_dependency(dependency, "development", source)
         end
         ParserResult.new(dependencies: dependencies)
+      end
+
+      def self.parse_composer_dependency(dependency, type, source)
+        requirement = dependency["version"]
+        original_requirement = nil
+
+        # Store Drupal version if Drupal, but include the original manifest version for reference
+        if drupal_module?(dependency)
+          original_requirement = requirement
+          requirement = dependency.dig("source", "reference")
+        end
+
+        # Extract shasum from dist if present and non-empty
+        shasum = dependency.dig("dist", "shasum")
+        integrity = shasum && !shasum.empty? ? "sha1=#{shasum}" : nil
+
+        Dependency.new(
+          name: dependency["name"],
+          requirement: requirement,
+          type: type,
+          original_requirement: original_requirement,
+          source: source,
+          platform: platform_name,
+          integrity: integrity
+        )
       end
 
       def self.parse_manifest(file_contents, options: {})

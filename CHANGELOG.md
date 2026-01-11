@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - apk: Alpine Linux APKBUILD parser for depends, makedepends, and checkdepends
 - deb: Debian control file parser for Build-Depends, Depends, Pre-Depends, Recommends, Suggests
 - rpm: RPM spec file parser for BuildRequires and Requires
+- integrity: Added `integrity` field to Dependency class for lockfile hashes (npm package-lock.json, pnpm-lock.yaml, yarn.lock v4, bun.lock, go.sum, Gemfile.lock, deno.lock, composer.lock, stack.yaml.lock, Cargo.lock, Podfile.lock, mix.lock, rebar.lock, manifest.toml, poetry.lock, uv.lock)
 
 ### Changed
 

@@ -182,9 +182,9 @@ describe Bibliothecary::Parsers::Hackage do
       path: "stack.yaml.lock",
       project_name: nil,
       dependencies: [
-        Bibliothecary::Dependency.new(platform: "hackage", name: "fuzzyset", requirement: "0.2.4", type: "runtime", source: "stack.yaml.lock"),
-        Bibliothecary::Dependency.new(platform: "hackage", name: "hasql-pool", requirement: "1.0.1", type: "runtime", source: "stack.yaml.lock"),
-        Bibliothecary::Dependency.new(platform: "hackage", name: "jose-jwt", requirement: "0.10.0", type: "runtime", source: "stack.yaml.lock"),
+        Bibliothecary::Dependency.new(platform: "hackage", name: "fuzzyset", requirement: "0.2.4", type: "runtime", source: "stack.yaml.lock", integrity: "sha256=f1b6de8bf33277bf6255207541d65028f1f1ea93af5541b654c86b5674995485"),
+        Bibliothecary::Dependency.new(platform: "hackage", name: "hasql-pool", requirement: "1.0.1", type: "runtime", source: "stack.yaml.lock", integrity: "sha256=3cfb4c7153a6c536ac7e126c17723e6d26ee03794954deed2d72bcc826d05a40"),
+        Bibliothecary::Dependency.new(platform: "hackage", name: "jose-jwt", requirement: "0.10.0", type: "runtime", source: "stack.yaml.lock", integrity: "sha256=6ed175a01c721e317ceea15eb251a81de145c03711a977517935633a5cdec1d4"),
       ],
       kind: "lockfile",
       success: true,

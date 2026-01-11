@@ -5,13 +5,15 @@ module Bibliothecary
     class Hex
       include Bibliothecary::Analyser
 
-      # Matches mix.lock entries: "name": {:hex, :name, "version", ...
+      # Matches mix.lock entries: "name": {:hex, :name, "version", "hash", ...
       # or "name": {:git, "url", "ref", ...
-      HEX_LOCK_REGEXP = /"([^"]+)":\s*\{:hex,\s*:[^,]+,\s*"([^"]+)"/
+      HEX_LOCK_REGEXP = /"([^"]+)":\s*\{:hex,\s*:[^,]+,\s*"([^"]+)",\s*"([^"]+)"/
       GIT_LOCK_REGEXP = /"([^"]+)":\s*\{:git,\s*"([^"]+)",\s*"([^"]+)"/
 
       # Matches rebar.lock entries: {<<"name">>,{pkg,<<"name">>,<<"version">>},N}
       REBAR_LOCK_REGEXP = /\{<<"([^"]+)">>,\{pkg,<<"[^"]+">>,<<"([^"]+)">>},\d+\}/
+      # Matches rebar.lock pkg_hash entries: {<<"name">>, <<"HASH">>}
+      REBAR_PKG_HASH_REGEXP = /\{<<"([^"]+)">>,\s*<<"([A-F0-9]+)">>}/
 
       def self.file_patterns
         ["mix.exs", "mix.lock", "gleam.toml", "manifest.toml", "rebar.lock"]
@@ -74,14 +76,15 @@ module Bibliothecary
         source = options.fetch(:filename, "mix.lock")
         deps = []
 
-        # Match hex packages: "name": {:hex, :name, "version", ...
-        file_contents.scan(HEX_LOCK_REGEXP) do |name, version|
+        # Match hex packages: "name": {:hex, :name, "version", "hash", ...
+        file_contents.scan(HEX_LOCK_REGEXP) do |name, version, hash|
           deps << Dependency.new(
             platform: platform_name,
             name: name,
             requirement: version,
             type: "runtime",
-            source: source
+            source: source,
+            integrity: "sha256=#{hash}"
           )
         end
 
@@ -135,12 +138,14 @@ module Bibliothecary
         manifest.fetch("packages", []).each do |pkg|
           next unless pkg["source"] == "hex"
 
+          checksum = pkg["outer_checksum"]
           deps << Dependency.new(
             platform: platform_name,
             name: pkg["name"],
             requirement: pkg["version"],
             type: "runtime",
-            source: source
+            source: source,
+            integrity: checksum ? "sha256=#{checksum.downcase}" : nil
           )
         end
 
@@ -151,13 +156,23 @@ module Bibliothecary
         source = options.fetch(:filename, "rebar.lock")
         deps = []
 
+        # Parse pkg_hash section to build lookup table
+        pkg_hashes = {}
+        pkg_hash_section = file_contents[/\{pkg_hash,\s*\[(.*?)\]\}/m, 1]
+        if pkg_hash_section
+          pkg_hash_section.scan(REBAR_PKG_HASH_REGEXP) do |name, hash|
+            pkg_hashes[name] = "sha256=#{hash.downcase}"
+          end
+        end
+
         file_contents.scan(REBAR_LOCK_REGEXP) do |name, version|
           deps << Dependency.new(
             platform: platform_name,
             name: name,
             requirement: version,
             type: "runtime",
-            source: source
+            source: source,
+            integrity: pkg_hashes[name]
           )
         end
 

@@ -16,7 +16,8 @@ describe Bibliothecary::Dependency do
         optional: true,
         original_name: "foo-alias",
         original_requirement: "1.0.0.rc1",
-        source: "package.json"
+        source: "package.json",
+        integrity: "sha512-abc123=="
       )
 
       expect(dep.name).to eq("foo")
@@ -30,6 +31,7 @@ describe Bibliothecary::Dependency do
       expect(dep.original_name).to eq("foo-alias")
       expect(dep.original_requirement).to eq("1.0.0.rc1")
       expect(dep.source).to eq("package.json")
+      expect(dep.integrity).to eq("sha512-abc123==")
     end
 
     it "only requires name and requirement" do
@@ -64,6 +66,7 @@ describe Bibliothecary::Dependency do
         original_name: "foo-alias",
         original_requirement: "1.0.0.rc1",
         source: "package.json",
+        integrity: "sha512-abc123==",
       }
 
       dep = described_class.new(**attrs)

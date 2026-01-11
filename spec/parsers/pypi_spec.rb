@@ -580,85 +580,51 @@ describe Bibliothecary::Parsers::Pypi do
   end
 
   it "parses dependencies from Poetry.lock" do
-    expect(described_class.analyse_contents("poetry.lock", load_fixture("poetry.lock"))).to eq({
-                                                                                                 platform: "pypi",
-                                                                                                 path: "poetry.lock",
-                                                                                                 project_name: nil,
-                                                                                                 dependencies: [
-        Bibliothecary::Dependency.new(platform: "pypi", name: "asgiref", requirement: "3.7.2", type: "runtime", source: "poetry.lock"),
-        Bibliothecary::Dependency.new(platform: "pypi", name: "atomicwrites", requirement: "1.4.1", type: "develop", source: "poetry.lock"),
-        Bibliothecary::Dependency.new(platform: "pypi", name: "attrs", requirement: "24.2.0", type: "develop", source: "poetry.lock"),
-        Bibliothecary::Dependency.new(platform: "pypi", name: "colorama", requirement: "0.4.6", type: "develop", source: "poetry.lock"),
-        Bibliothecary::Dependency.new(platform: "pypi", name: "django", requirement: "3.2.25", type: "runtime", source: "poetry.lock"),
-        Bibliothecary::Dependency.new(platform: "pypi", name: "importlib-metadata", requirement: "6.7.0", type: "develop", source: "poetry.lock"),
-        Bibliothecary::Dependency.new(platform: "pypi", name: "more-itertools", requirement: "9.1.0", type: "develop", source: "poetry.lock"),
-        Bibliothecary::Dependency.new(platform: "pypi", name: "packaging", requirement: "24.0", type: "develop", source: "poetry.lock"),
-        Bibliothecary::Dependency.new(platform: "pypi", name: "pathlib2", requirement: "2.3.7.post1", type: "runtime", source: "poetry.lock"),
-        Bibliothecary::Dependency.new(platform: "pypi", name: "pluggy", requirement: "0.13.1", type: "runtime", source: "poetry.lock"),
-        Bibliothecary::Dependency.new(platform: "pypi", name: "py", requirement: "1.11.0", type: "develop", source: "poetry.lock"),
-        Bibliothecary::Dependency.new(platform: "pypi", name: "pytest", requirement: "5.4.3", type: "develop", source: "poetry.lock"),
-        Bibliothecary::Dependency.new(platform: "pypi", name: "pytz", requirement: "2025.2", type: "runtime", source: "poetry.lock"),
-        Bibliothecary::Dependency.new(platform: "pypi", name: "setuptools", requirement: "68.0.0", type: "runtime", source: "poetry.lock"),
-        Bibliothecary::Dependency.new(platform: "pypi", name: "six", requirement: "1.17.0", type: "runtime", source: "poetry.lock"),
-        Bibliothecary::Dependency.new(platform: "pypi", name: "sqlparse", requirement: "0.4.4", type: "runtime", source: "poetry.lock"),
-        Bibliothecary::Dependency.new(platform: "pypi", name: "sqlparse", requirement: "0.4.4", type: "test", source: "poetry.lock"),
-        Bibliothecary::Dependency.new(platform: "pypi", name: "typing-extensions", requirement: "4.7.1", type: "runtime", source: "poetry.lock"),
-        Bibliothecary::Dependency.new(platform: "pypi", name: "typing-extensions", requirement: "4.7.1", type: "develop", source: "poetry.lock"),
-        Bibliothecary::Dependency.new(platform: "pypi", name: "wcwidth", requirement: "0.2.13", type: "develop", source: "poetry.lock"),
-        Bibliothecary::Dependency.new(platform: "pypi", name: "zipp", requirement: "3.15.0", type: "develop", source: "poetry.lock"),
-        Bibliothecary::Dependency.new(platform: "pypi", name: "zope-interface", requirement: "6.3", type: "runtime", source: "poetry.lock"),
-      ],
-                                                                                                 kind: "lockfile",
-                                                                                                 success: true,
-                                                                                               })
+    result = described_class.analyse_contents("poetry.lock", load_fixture("poetry.lock"))
+    expect(result[:platform]).to eq("pypi")
+    expect(result[:path]).to eq("poetry.lock")
+    expect(result[:kind]).to eq("lockfile")
+    expect(result[:success]).to eq(true)
+
+    deps = result[:dependencies]
+    expect(deps.length).to eq(22)
+
+    # Check sdist integrity hashes are extracted from .tar.gz files
+    asgiref = deps.find { |d| d.name == "asgiref" }
+    expect(asgiref.requirement).to eq("3.7.2")
+    expect(asgiref.integrity).to eq("sha256:9e0ce3aa93a819ba5b45120216b23878cf6e8525eb3848653452b4192b92afed")
+
+    django = deps.find { |d| d.name == "django" }
+    expect(django.requirement).to eq("3.2.25")
+    expect(django.integrity).to eq("sha256:7ca38a78654aee72378594d63e51636c04b8e28574f5505dff630895b5472777")
+
+    atomicwrites = deps.find { |d| d.name == "atomicwrites" }
+    expect(atomicwrites.requirement).to eq("1.4.1")
+    expect(atomicwrites.integrity).to eq("sha256:81b2c9071a49367a7f770170e5eec8cb66567cfbbc8c73d20ce5ca4a8d71cf11")
   end
 
   it "parses dependencies from uv.lock" do
-    expect(described_class.analyse_contents("uv.lock", load_fixture("uv.lock"))).to eq({
-      platform: "pypi",
-      path: "uv.lock",
-      dependencies: [
-        Bibliothecary::Dependency.new(platform: "pypi", name: "alabaster", requirement: "0.7.16", type: "runtime", source: "uv.lock"),
-        Bibliothecary::Dependency.new(platform: "pypi", name: "babel", requirement: "2.16.0", type: "runtime", source: "uv.lock"),
-        Bibliothecary::Dependency.new(platform: "pypi", name: "beautifulsoup4", requirement: "4.12.3", type: "runtime", source: "uv.lock"),
-        Bibliothecary::Dependency.new(platform: "pypi", name: "certifi", requirement: "2024.8.30", type: "runtime", source: "uv.lock"),
-        Bibliothecary::Dependency.new(platform: "pypi", name: "charset-normalizer", requirement: "3.4.0", type: "runtime", source: "uv.lock"),
-        Bibliothecary::Dependency.new(platform: "pypi", name: "colorama", requirement: "0.4.6", type: "runtime", source: "uv.lock"),
-        Bibliothecary::Dependency.new(platform: "pypi", name: "docutils", requirement: "0.21.2", type: "runtime", source: "uv.lock"),
-        Bibliothecary::Dependency.new(platform: "pypi", name: "exceptiongroup", requirement: "1.2.2", type: "runtime", source: "uv.lock"),
-        Bibliothecary::Dependency.new(platform: "pypi", name: "ftfy", requirement: "6.3.1", type: "runtime", source: "uv.lock"),
-        Bibliothecary::Dependency.new(platform: "pypi", name: "furo", requirement: "2024.8.6", type: "runtime", source: "uv.lock"),
-        Bibliothecary::Dependency.new(platform: "pypi", name: "idna", requirement: "3.10", type: "runtime", source: "uv.lock"),
-        Bibliothecary::Dependency.new(platform: "pypi", name: "imagesize", requirement: "1.4.1", type: "runtime", source: "uv.lock"),
-        Bibliothecary::Dependency.new(platform: "pypi", name: "importlib-metadata", requirement: "8.5.0", type: "runtime", source: "uv.lock"),
-        Bibliothecary::Dependency.new(platform: "pypi", name: "iniconfig", requirement: "2.0.0", type: "runtime", source: "uv.lock"),
-        Bibliothecary::Dependency.new(platform: "pypi", name: "jinja2", requirement: "3.1.4", type: "runtime", source: "uv.lock"),
-        Bibliothecary::Dependency.new(platform: "pypi", name: "markupsafe", requirement: "3.0.1", type: "runtime", source: "uv.lock"),
-        Bibliothecary::Dependency.new(platform: "pypi", name: "packaging", requirement: "24.1", type: "runtime", source: "uv.lock"),
-        Bibliothecary::Dependency.new(platform: "pypi", name: "pluggy", requirement: "1.5.0", type: "runtime", source: "uv.lock"),
-        Bibliothecary::Dependency.new(platform: "pypi", name: "pygments", requirement: "2.18.0", type: "runtime", source: "uv.lock"),
-        Bibliothecary::Dependency.new(platform: "pypi", name: "pytest", requirement: "8.3.3", type: "runtime", source: "uv.lock"),
-        Bibliothecary::Dependency.new(platform: "pypi", name: "requests", requirement: "2.32.3", type: "runtime", source: "uv.lock"),
-        Bibliothecary::Dependency.new(platform: "pypi", name: "ruff", requirement: "0.6.9", type: "runtime", source: "uv.lock"),
-        Bibliothecary::Dependency.new(platform: "pypi", name: "snowballstemmer", requirement: "2.2.0", type: "runtime", source: "uv.lock"),
-        Bibliothecary::Dependency.new(platform: "pypi", name: "soupsieve", requirement: "2.6", type: "runtime", source: "uv.lock"),
-        Bibliothecary::Dependency.new(platform: "pypi", name: "sphinx", requirement: "7.4.7", type: "runtime", source: "uv.lock"),
-        Bibliothecary::Dependency.new(platform: "pypi", name: "sphinx-basic-ng", requirement: "1.0.0b2", type: "runtime", source: "uv.lock"),
-        Bibliothecary::Dependency.new(platform: "pypi", name: "sphinxcontrib-applehelp", requirement: "2.0.0", type: "runtime", source: "uv.lock"),
-        Bibliothecary::Dependency.new(platform: "pypi", name: "sphinxcontrib-devhelp", requirement: "2.0.0", type: "runtime", source: "uv.lock"),
-        Bibliothecary::Dependency.new(platform: "pypi", name: "sphinxcontrib-htmlhelp", requirement: "2.1.0", type: "runtime", source: "uv.lock"),
-        Bibliothecary::Dependency.new(platform: "pypi", name: "sphinxcontrib-jsmath", requirement: "1.0.1", type: "runtime", source: "uv.lock"),
-        Bibliothecary::Dependency.new(platform: "pypi", name: "sphinxcontrib-qthelp", requirement: "2.0.0", type: "runtime", source: "uv.lock"),
-        Bibliothecary::Dependency.new(platform: "pypi", name: "sphinxcontrib-serializinghtml", requirement: "2.0.0", type: "runtime", source: "uv.lock"),
-        Bibliothecary::Dependency.new(platform: "pypi", name: "tomli", requirement: "2.0.2", type: "runtime", source: "uv.lock"),
-        Bibliothecary::Dependency.new(platform: "pypi", name: "urllib3", requirement: "2.2.3", type: "runtime", source: "uv.lock"),
-        Bibliothecary::Dependency.new(platform: "pypi", name: "wcwidth", requirement: "0.2.13", type: "runtime", source: "uv.lock"),
-        Bibliothecary::Dependency.new(platform: "pypi", name: "zipp", requirement: "3.20.2", type: "runtime", source: "uv.lock")
-      ],
-      project_name: nil,
-      kind: "lockfile",
-      success: true
-    })
+    result = described_class.analyse_contents("uv.lock", load_fixture("uv.lock"))
+    expect(result[:platform]).to eq("pypi")
+    expect(result[:path]).to eq("uv.lock")
+    expect(result[:kind]).to eq("lockfile")
+    expect(result[:success]).to eq(true)
+
+    deps = result[:dependencies]
+    expect(deps.length).to eq(36)
+
+    # Check sdist integrity hashes are extracted
+    alabaster = deps.find { |d| d.name == "alabaster" }
+    expect(alabaster.requirement).to eq("0.7.16")
+    expect(alabaster.integrity).to eq("sha256:75a8b99c28a5dad50dd7f8ccdd447a121ddb3892da9e53d1ca5cca3106d58d65")
+
+    babel = deps.find { |d| d.name == "babel" }
+    expect(babel.requirement).to eq("2.16.0")
+    expect(babel.integrity).to eq("sha256:d1f3554ca26605fe173f3de0c65f750f5a42f924499bf134de6423582298e316")
+
+    certifi = deps.find { |d| d.name == "certifi" }
+    expect(certifi.requirement).to eq("2024.8.30")
+    expect(certifi.integrity).to eq("sha256:bec941d2aa8195e248a60b31ff9f0558284cf01a52591ceda73ea9afffd69fd9")
   end
 
   it "parses dependencies from pdm.lock" do

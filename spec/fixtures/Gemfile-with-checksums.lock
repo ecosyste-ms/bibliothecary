@@ -1,0 +1,23 @@
+GEM
+  remote: https://rubygems.org/
+  specs:
+    builder (3.3.0)
+    concurrent-ruby (1.3.6)
+    rack (3.1.12)
+    rake (13.2.1)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  rake
+
+BUNDLED WITH
+   2.6.2
+
+CHECKSUMS
+  builder (3.3.0) sha256=497918d2f9dca528fdca4b88d84e4ef4387256d984b8154e9d5d3fe5a9c8835f
+  bundler (2.6.2) sha256=9e0c09d351d7b8bc1ceb11a15d8ca6f3dc6cbecc77ae99e27c3ec8b656f7f5ca
+  concurrent-ruby (1.3.6) sha256=6b56837e1e7e5292f9864f34b69c5a2cbc75c0cf5338f1ce9903d10fa762d5ab
+  rack (3.1.12) sha256=40fcf876bb900016613cc330a7c331159c5bdc6f8bb60efdd9c4c0ba80e2ea0f
+  rake (13.2.1) sha256=46cb38dae65d7d74b6020a4ac9d48afed8eb8149c040eccf0523bec91907059d

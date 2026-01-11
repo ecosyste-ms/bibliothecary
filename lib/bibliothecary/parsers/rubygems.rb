@@ -10,6 +10,8 @@ module Bibliothecary
       NAME_VERSION = '(?! )(.*?)(?: \(([^-]*)(?:-(.*))?\))?'
       NAME_VERSION_4 = /^ {4}#{NAME_VERSION}$/
       BUNDLED_WITH = /BUNDLED WITH/
+      CHECKSUMS_START = /^CHECKSUMS$/
+      CHECKSUM_LINE = /^  (.+) \(([^)]+)\) sha256=([a-f0-9]+)$/
 
       # Gemfile patterns
       GEM_REGEXP = /^\s*gem\s+['"]([^'"]+)['"]\s*(?:,\s*['"]([^'"]+)['"])?/
@@ -47,6 +49,7 @@ module Bibliothecary
       def self.parse_gemfile_lock(file_contents, options: {})
         source = options.fetch(:filename, nil)
         dependencies = []
+        checksums = parse_checksums(file_contents)
 
         file_contents.each_line do |line|
           line = line.chomp.gsub(/\r$/, "")
@@ -60,15 +63,41 @@ module Bibliothecary
             name: name,
             requirement: version,
             type: "runtime",
-            source: source
+            source: source,
+            integrity: checksums["#{name}-#{version}"]
           )
         end
 
-        if (bundler_dep = parse_bundler(file_contents, source))
+        if (bundler_dep = parse_bundler(file_contents, source, checksums))
           dependencies << bundler_dep
         end
 
         ParserResult.new(dependencies: dependencies)
+      end
+
+      def self.parse_checksums(file_contents)
+        checksums = {}
+        in_checksums = false
+
+        file_contents.each_line do |line|
+          line = line.chomp
+          if line.match?(CHECKSUMS_START)
+            in_checksums = true
+            next
+          end
+
+          next unless in_checksums
+
+          # End of CHECKSUMS section (blank line or new section)
+          break if line.empty? || line.match?(/^[A-Z]/)
+
+          if (match = line.match(CHECKSUM_LINE))
+            name, version, sha256 = match.captures
+            checksums["#{name}-#{version}"] = "sha256=#{sha256}"
+          end
+        end
+
+        checksums
       end
 
       def self.parse_gemfile(file_contents, options: {})
@@ -151,7 +180,7 @@ module Bibliothecary
         end
       end
 
-      def self.parse_bundler(file_contents, source = nil)
+      def self.parse_bundler(file_contents, source = nil, checksums = {})
         bundled_with_index = file_contents.lines(chomp: true).find_index { |line| line.match(BUNDLED_WITH) }
         return nil unless bundled_with_index
 
@@ -163,7 +192,8 @@ module Bibliothecary
           requirement: version,
           type: "runtime",
           source: source,
-          platform: platform_name
+          platform: platform_name,
+          integrity: checksums["bundler-#{version}"]
         )
       end
     end

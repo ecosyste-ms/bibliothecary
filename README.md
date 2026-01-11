@@ -42,6 +42,48 @@ Bibliothecary.analyse('./')
 
 All available config options are in: https://github.com/ecosyste-ms/bibliothecary/blob/master/lib/bibliothecary/configuration.rb
 
+## Dependency fields
+
+Each parsed dependency is a `Bibliothecary::Dependency` with:
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `name` | String | Package name |
+| `requirement` | String | Version requirement (defaults to `"*"`) |
+| `platform` | String | Package manager platform (e.g. `"npm"`, `"maven"`) |
+| `type` | String | Dependency scope: `"runtime"`, `"development"`, `"test"`, etc. |
+| `direct` | Boolean | Direct dependency (vs transitive) |
+| `deprecated` | Boolean | Deprecated dependency |
+| `local` | Boolean | Local/file path dependency |
+| `optional` | Boolean | Optional dependency |
+| `original_name` | String | Original name before aliasing/normalization |
+| `original_requirement` | String | Original requirement before resolution |
+| `source` | String | Path to the manifest file |
+| `integrity` | String | Lockfile integrity hash (see table below) |
+
+## Integrity hash support
+
+The `integrity` field is populated for lockfiles that include per-dependency hashes:
+
+| Lockfile | Platform | Hash format |
+|----------|----------|-------------|
+| package-lock.json | npm | `sha512-...` |
+| pnpm-lock.yaml | npm | `sha512-...` |
+| yarn.lock (v2+) | npm | `sha512-...` |
+| bun.lock | npm | `sha512-...` |
+| deno.lock | deno | `sha512-...` |
+| go.sum | go | `h1:...` |
+| Gemfile.lock | rubygems | `sha256=...` |
+| poetry.lock | pypi | `sha256:...` |
+| uv.lock | pypi | `sha256:...` |
+| composer.lock | packagist | `sha1=...` |
+| Cargo.lock | cargo | `sha256=...` |
+| Podfile.lock | cocoapods | `sha1=...` |
+| mix.lock | hex | `sha256=...` |
+| rebar.lock | hex | `sha256=...` |
+| manifest.toml (Gleam) | hex | `sha256=...` |
+| stack.yaml.lock | hackage | `sha256=...` |
+
 ## Supported package manager file formats
 
 - Actions

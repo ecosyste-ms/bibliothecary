@@ -106,7 +106,8 @@ module Bibliothecary
               type: dep.fetch("dev", false) || dep.fetch("devOptional", false) ? "development" : "runtime",
               local: dep.fetch("link", false),
               source: source,
-              platform: platform_name
+              platform: platform_name,
+              integrity: dep["integrity"]
             )
           end
       end
@@ -127,7 +128,8 @@ module Bibliothecary
             requirement: version,
             type: type,
             source: source,
-            platform: platform_name
+            platform: platform_name,
+            integrity: requirement["integrity"]
           )] + child_dependencies
         end
       end
@@ -196,7 +198,8 @@ module Bibliothecary
             type: nil, # yarn.lock doesn't report on the type of dependency
             local: dep[:requirements]&.first&.start_with?("file:"),
             source: options.fetch(:filename, nil),
-            platform: platform_name
+            platform: platform_name,
+            integrity: dep[:integrity]
           )
         end
         ParserResult.new(dependencies: dependencies)
@@ -237,11 +240,23 @@ module Bibliothecary
 
       def self.parse_v2_yarn_lock(contents, source = nil)
         deps = []
-        # Match package blocks: "package@npm:req": followed by version: x.y.z
-        # Examples: "js-tokens@npm:^3.0.0 || ^4.0.0": or "pkg1@npm:req1, pkg2@npm:req2":
-        contents.scan(/^"([^"]+)":\s*\n\s+version:\s*([^\n]+)/m) do |packages_str, version|
+        # Split into blocks by double newlines or by unquoted key lines
+        # Each block starts with "package@npm:req": and continues until the next package
+        blocks = contents.split(/\n\n+/)
+
+        blocks.each do |block|
+          # Match the package header: "package@npm:...":\n  version: ...
+          match = block.match(/^"([^"]+)":\s*\n(.+)/m)
+          next unless match
+
+          packages_str = match[1]
+          body = match[2]
+
+          version = body[/version:\s*([^\n]+)/, 1]
+          checksum = body[/checksum:\s*([^\n]+)/, 1]
+
           # Skip workspace/local packages and patches
-          next if version.include?("use.local") && packages_str.include?("workspace")
+          next if version&.include?("use.local") && packages_str.include?("workspace")
           next if packages_str.include?("@patch:")
 
           packages = packages_str.split(", ")
@@ -256,6 +271,7 @@ module Bibliothecary
             original_requirement: alias_name.nil? ? nil : version.to_s,
             version: version.to_s,
             source: source,
+            integrity: checksum,
           }
         end
         deps
@@ -290,7 +306,8 @@ module Bibliothecary
               original_requirement: original_requirement,
               type: is_dev ? "development" : "runtime",
               source: source,
-              platform: platform_name
+              platform: platform_name,
+              integrity: details.dig("resolution", "integrity")
             )
           end
       end
@@ -327,7 +344,8 @@ module Bibliothecary
               original_requirement: original_requirement,
               type: is_dev ? "development" : "runtime",
               source: source,
-              platform: platform_name
+              platform: platform_name,
+              integrity: details.dig("resolution", "integrity")
             )
           end
       end
@@ -336,6 +354,7 @@ module Bibliothecary
         dependencies = parsed_contents.fetch("importers", {}).fetch(".", {}).fetch("dependencies", {})
         dev_dependencies = parsed_contents.fetch("importers", {}).fetch(".", {}).fetch("devDependencies", {})
         dependency_mapping = dependencies.merge(dev_dependencies)
+        packages = parsed_contents.fetch("packages", {})
 
         # "dependencies" is in "packages" for < v9 and in "snapshots" for >= v9
         # as of https://github.com/pnpm/pnpm/pull/7700.
@@ -369,6 +388,10 @@ module Bibliothecary
               dev_name == name && dev_details["version"] == version
             end
 
+            # In v9, integrity is stored in packages section, not snapshots
+            package_key = "#{name}@#{version}"
+            integrity = packages.dig(package_key, "resolution", "integrity")
+
             Dependency.new(
               name: name,
               requirement: version,
@@ -376,7 +399,8 @@ module Bibliothecary
               original_requirement: original_requirement,
               type: is_dev ? "development" : "runtime",
               source: source,
-              platform: platform_name
+              platform: platform_name,
+              integrity: integrity
             )
           end
       end
@@ -469,7 +493,8 @@ module Bibliothecary
             type: dev_deps&.include?(name) ? "development" : "runtime",
             local: is_local,
             source: source,
-            platform: platform_name
+            platform: platform_name,
+            integrity: info[3]
           )
         end
         ParserResult.new(dependencies: dependencies)

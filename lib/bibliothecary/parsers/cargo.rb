@@ -55,6 +55,7 @@ module Bibliothecary
           name = block[/name\s*=\s*"([^"]+)"/, 1]
           version = block[/version\s*=\s*"([^"]+)"/, 1]
           source = block[/source\s*=\s*"([^"]+)"/, 1]
+          checksum = block[/checksum\s*=\s*"([^"]+)"/, 1]
 
           # Skip packages without a registry source (local/workspace packages)
           next unless source&.start_with?("registry+")
@@ -64,7 +65,8 @@ module Bibliothecary
             requirement: version,
             type: "runtime",
             source: options.fetch(:filename, nil),
-            platform: platform_name
+            platform: platform_name,
+            integrity: checksum ? "sha256=#{checksum}" : nil
           )
         end
         ParserResult.new(dependencies: dependencies)

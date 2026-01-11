@@ -18,6 +18,8 @@ module Bibliothecary
   #   for cases where it did not match the resolved name. This can be used for features like aliasing.
   # @source [String] source An optional string to store the location of the manifest that contained this
   #   dependency, e.g. "src/package.json".
+  # @attr_reader [String] integrity An optional integrity hash from the lockfile, stored as-is
+  #   (e.g. "sha512-abc123..." for npm, "h1:xyz..." for go.sum).
   class Dependency
     FIELDS = %i[
       name
@@ -31,6 +33,7 @@ module Bibliothecary
       optional
       original_name
       source
+      integrity
     ].freeze
 
     attr_reader(*FIELDS)
@@ -46,7 +49,8 @@ module Bibliothecary
       local: nil,
       optional: nil,
       original_name: nil,
-      source: nil
+      source: nil,
+      integrity: nil
     )
       @name = name
       @platform = platform
@@ -59,6 +63,7 @@ module Bibliothecary
       @optional = optional
       @original_name = original_name
       @source = source
+      @integrity = integrity
     end
 
     def eql?(other)

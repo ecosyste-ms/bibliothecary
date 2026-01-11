@@ -49,6 +49,9 @@ module Bibliothecary
         source = options.fetch(:filename, nil)
         dependencies = []
 
+        # Parse SPEC CHECKSUMS section to build lookup table
+        checksums = parse_spec_checksums(file_contents)
+
         # Match pod entries: "  - Name (version)" or "  - Name/Subspec (version)"
         # Only process lines in PODS section (before DEPENDENCIES section)
         pods_section = file_contents.split(/^DEPENDENCIES:/)[0]
@@ -60,11 +63,36 @@ module Bibliothecary
             name: base_name,
             requirement: version,
             type: "runtime",
-            source: source
+            source: source,
+            integrity: checksums[base_name]
           )
         end
 
         ParserResult.new(dependencies: dependencies)
+      end
+
+      def self.parse_spec_checksums(file_contents)
+        checksums = {}
+        in_checksums = false
+
+        file_contents.each_line do |line|
+          if line.start_with?("SPEC CHECKSUMS:")
+            in_checksums = true
+            next
+          end
+
+          next unless in_checksums
+
+          # End of section (blank line or new section)
+          break if line.strip.empty? || (line !~ /^\s/ && line.strip != "")
+
+          # Match "  Name: sha1hash"
+          if (match = line.match(/^\s+([^:]+):\s*([a-f0-9]+)\s*$/))
+            checksums[match[1]] = "sha1=#{match[2]}"
+          end
+        end
+
+        checksums
       end
 
       def self.parse_podspec(file_contents, options: {})
