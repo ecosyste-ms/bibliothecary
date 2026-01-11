@@ -49,9 +49,13 @@ All available config options are in: https://github.com/ecosyste-ms/bibliothecar
   - action.yaml
   - .github/workflows/\*.yml
   - .github/workflows/\*.yaml
+- Alpm
+  - PKGBUILD
 - Anaconda
   - environment.yml
   - environment.yaml
+- Apk
+  - APKBUILD
 - BentoML
   - bentofile.yaml
 - Bower
@@ -86,6 +90,9 @@ All available config options are in: https://github.com/ecosyste-ms/bibliothecar
 - CRAN
   - DESCRIPTION
   - renv.lock
+- Deb
+  - debian/control
+  - control
 - Deno
   - deno.json
   - deno.jsonc
@@ -201,6 +208,8 @@ All available config options are in: https://github.com/ecosyste-ms/bibliothecar
   - pdm.lock
   - pip-resolved-dependencies.txt
   - pip-dependency-graph.json
+- Rpm
+  - \*.spec
 - RubyGems
   - Gemfile
   - Gemfile.lock

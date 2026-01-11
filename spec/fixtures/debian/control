@@ -1,0 +1,25 @@
+Source: hello
+Section: devel
+Priority: optional
+Maintainer: Example User <user@example.com>
+Build-Depends: debhelper-compat (= 13),
+               gcc (>= 4:10),
+               gettext
+Build-Depends-Indep: texinfo
+Standards-Version: 4.6.2
+Homepage: https://www.gnu.org/software/hello/
+Rules-Requires-Root: no
+
+Package: hello
+Architecture: any
+Multi-Arch: foreign
+Depends: ${shlibs:Depends},
+         ${misc:Depends},
+         libc6 (>= 2.17)
+Recommends: info | www-browser
+Suggests: gettext-doc
+Pre-Depends: dpkg (>= 1.17.5)
+Description: example package based on GNU hello
+ The GNU hello program produces a familiar, friendly greeting.
+ .
+ This is an example package for testing.

@@ -1,0 +1,11 @@
+# Test APKBUILD with version constraints
+pkgname=test-package
+pkgver=1.0.0
+pkgrel=0
+pkgdesc="Test package"
+url="https://example.org/"
+arch="all"
+license="MIT"
+depends="libfoo>=1.0 libbar<2.0 libbaz"
+makedepends="gcc make openssl-dev>3 zlib-dev>=1.2.3"
+checkdepends="pytest python3>=3.9"

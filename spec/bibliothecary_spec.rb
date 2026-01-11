@@ -10,6 +10,8 @@ describe Bibliothecary do
   it "lists supported package managers" do
     expect(described_class.package_managers).to eq([
           Bibliothecary::Parsers::Actions,
+          Bibliothecary::Parsers::Alpm,
+          Bibliothecary::Parsers::Apk,
           Bibliothecary::Parsers::BentoML,
           Bibliothecary::Parsers::Bower,
           Bibliothecary::Parsers::Cargo,
@@ -21,6 +23,7 @@ describe Bibliothecary do
           Bibliothecary::Parsers::Conda,
           Bibliothecary::Parsers::CPAN,
           Bibliothecary::Parsers::CRAN,
+          Bibliothecary::Parsers::Deb,
           Bibliothecary::Parsers::Deno,
           Bibliothecary::Parsers::Docker,
           Bibliothecary::Parsers::Dub,
@@ -44,6 +47,7 @@ describe Bibliothecary do
           Bibliothecary::Parsers::Packagist,
           Bibliothecary::Parsers::Pub,
           Bibliothecary::Parsers::Pypi,
+          Bibliothecary::Parsers::Rpm,
           Bibliothecary::Parsers::Rubygems,
           Bibliothecary::Parsers::Shard,
           Bibliothecary::Parsers::SwiftPM,

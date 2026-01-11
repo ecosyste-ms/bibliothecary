@@ -10,6 +10,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - npm: pnpm-workspace.yaml support for catalog dependencies (pnpm 9+)
+- alpm: Arch Linux PKGBUILD parser for depends, makedepends, and checkdepends
+- apk: Alpine Linux APKBUILD parser for depends, makedepends, and checkdepends
+- deb: Debian control file parser for Build-Depends, Depends, Pre-Depends, Recommends, Suggests
+- rpm: RPM spec file parser for BuildRequires and Requires
 
 ### Changed
 
