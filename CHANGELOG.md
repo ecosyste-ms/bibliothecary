@@ -13,6 +13,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 
+## [15.4.0]
+
+- Parser for MODULE.bazel manifests
+
+### Added
+
 ## [15.3.0]
 
 ### Added
@@ -158,7 +164,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Added Bibliothecary::ParserResult class, which wraps the parsed dependencies along with the project name, if it was found in the manifest. 
+- Added Bibliothecary::ParserResult class, which wraps the parsed dependencies along with the project name, if it was found in the manifest.
 
 ### Changed
 
