@@ -12,6 +12,7 @@ describe Bibliothecary do
           Bibliothecary::Parsers::Actions,
           Bibliothecary::Parsers::Alpm,
           Bibliothecary::Parsers::Apk,
+          Bibliothecary::Parsers::Bazel,
           Bibliothecary::Parsers::BentoML,
           Bibliothecary::Parsers::Bower,
           Bibliothecary::Parsers::Cargo,

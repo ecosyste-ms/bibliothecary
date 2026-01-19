@@ -1,6 +1,6 @@
 # Bibliothecary
 
-Dependency manifest parsing library for https://github.com/ecosyste-ms 
+Dependency manifest parsing library for https://github.com/ecosyste-ms
 
 This is a maintained fork of the original [Bibliothecary](https://github.com/librariesio/bibliothecary) gem, with support for additional manifest formats and bug fixes.
 
@@ -98,6 +98,8 @@ The `integrity` field is populated for lockfiles that include per-dependency has
   - environment.yaml
 - Apk
   - APKBUILD
+- Bazel
+  - MODULE.bazel
 - BentoML
   - bentofile.yaml
 - Bower

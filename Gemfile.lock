@@ -8,7 +8,7 @@ GIT
 PATH
   remote: .
   specs:
-    ecosystems-bibliothecary (15.3.0)
+    ecosystems-bibliothecary (15.4.0)
       bundler
       csv
       json (~> 2.8)
