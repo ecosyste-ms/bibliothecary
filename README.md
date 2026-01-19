@@ -276,6 +276,8 @@ After checking out the repo, run `bin/setup` to install dependencies. Then, run 
 
 To install this gem onto your local machine, run `bundle exec rake install`.
 
+To regenerate the supported file formats list in this README, run `bundle exec rake readme:update`.
+
 To release a new version:
 * in `CHANGELOG.md`, move the changes under `"Unreleased"` into a new section with your version number
 * bump and commit the version number in `version.rb` in the `main` branch
