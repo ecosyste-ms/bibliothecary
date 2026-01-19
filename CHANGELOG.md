@@ -15,9 +15,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [15.4.0]
 
-- Parser for MODULE.bazel manifests
-
 ### Added
+
+- Parser for MODULE.bazel manifests
 
 ## [15.3.0]
 
