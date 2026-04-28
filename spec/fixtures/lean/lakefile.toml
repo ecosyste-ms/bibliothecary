@@ -1,0 +1,28 @@
+name = "example"
+defaultTargets = ["Example"]
+
+[[require]]
+name = "batteries"
+scope = "leanprover-community"
+rev = "v4.30.0-rc2"
+
+[[require]]
+name = "Cli"
+git = "https://github.com/leanprover/lean4-cli"
+rev = "main"
+
+[[require]]
+name = "mathlib"
+scope = "leanprover-community"
+version = "4.30.0"
+
+[[require]]
+name = "localpkg"
+path = "../localpkg"
+
+[[require]]
+name = "leansqlite"
+source = {git = "https://github.com/leanprover/leansqlite", rev = "v0.1.0"}
+
+[[lean_lib]]
+name = "Example"
