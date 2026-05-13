@@ -185,6 +185,10 @@ The `integrity` field is populated for lockfiles that include per-dependency has
   - REQUIRE
   - Project.toml
   - Manifest.toml
+- Lean
+  - lakefile.toml
+  - lakefile.lean
+  - lake-manifest.json
 - LuaRocks
   - \*.rockspec
 - Maven

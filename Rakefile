@@ -36,6 +36,7 @@ namespace :readme do
       "hex" => "Hex",
       "homebrew" => "Homebrew",
       "julia" => "Julia",
+      "lean" => "Lean",
       "luarocks" => "LuaRocks",
       "maven" => "Maven",
       "meteor" => "Meteor",
