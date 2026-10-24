@@ -63,6 +63,53 @@ describe Bibliothecary::Parsers::Actions do
     })
   end
 
+  it 'parses docker references with registry ports and digests' do
+    action = <<~YAML
+      name: Fixture
+      runs:
+        using: composite
+        steps:
+          - uses: docker://alpine:3.20
+          - uses: docker://localhost:5000/img:1
+          - uses: docker://localhost:5000/img
+          - uses: docker://alpine@sha256:abc123
+          - uses: docker://ghcr.io/o/img:2@sha256:def456
+    YAML
+    expect(described_class.parse_manifest(action).dependencies.map { |d| [d.name, d.requirement] }).to eq([
+      ["docker://alpine", "3.20"],
+      ["docker://localhost:5000/img", "1"],
+      ["docker://localhost:5000/img", "*"],
+      ["docker://alpine", "sha256:abc123"],
+      ["docker://ghcr.io/o/img", "2"]
+    ])
+
+    docker_action = "name: Fixture\nruns:\n  using: docker\n  image: docker://localhost:5000/img@sha256:abc123\n"
+    expect(described_class.parse_manifest(docker_action).dependencies.map { |d| [d.name, d.requirement] }).to eq([
+      ["docker://localhost:5000/img", "sha256:abc123"]
+    ])
+
+    workflow = <<~YAML
+      on: push
+      jobs:
+        test:
+          runs-on: ubuntu-latest
+          services:
+            db:
+              image: localhost:5000/postgres:16
+            cache: redis@sha256:abc123
+            optional:
+              image: ''
+            unset:
+              ports: ['80']
+            expression:
+              image: ${{ matrix.redis && 'redis:7' || '' }}
+    YAML
+    expect(described_class.analyse_contents('.github/workflows/ci.yml', workflow)[:dependencies].map { |d| [d.name, d.requirement] }).to eq([
+      ["localhost:5000/postgres", "16"],
+      ["redis", "sha256:abc123"]
+    ])
+  end
+
   it 'matches valid manifest filepaths' do
     expect(described_class.match?('action.yml')).to be_truthy
     expect(described_class.match?('action.yaml')).to be_truthy

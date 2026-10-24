@@ -76,8 +76,8 @@ module Bibliothecary
               service
             end
           end
-        end.map do |image|
-          name,version = image.split(':')
+        end.select { |image| image.is_a?(String) && !image.strip.empty? && !image.include?('${{') }.map do |image|
+          name,version = parse_docker_image(image)
           Bibliothecary::Dependency.new(
             platform: platform_name,
             type: 'docker',
@@ -120,10 +120,8 @@ module Bibliothecary
       def self.parse_requirement(requirement,type, source)
         return nil if requirement.nil?
         if requirement =~ /^docker\:\/\//
-          docker_name = requirement.split('docker://').last
-          name, version = docker_name.split(':')
+          name, version = parse_docker_image(requirement.delete_prefix('docker://'))
           name = 'docker://' + name
-          version = version.split('@').first if version =~ /@/
         elsif requirement =~ /@/
           name,version,_sha = requirement.split('@')
         else
@@ -136,6 +134,19 @@ module Bibliothecary
           requirement: version || '*',
           source: source
         )
+      end
+
+      # A registry port also uses ':', so a tag is only a ':' after the last '/'.
+      def self.parse_docker_image(image)
+        reference, digest = image.split('@', 2)
+        tag_index = reference.rindex(':')
+        if tag_index && tag_index > (reference.rindex('/') || -1)
+          name = reference[0...tag_index]
+          tag = reference[(tag_index + 1)..]
+        else
+          name = reference
+        end
+        [name, tag || digest]
       end
     end
   end
