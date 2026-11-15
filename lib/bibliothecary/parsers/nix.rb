@@ -43,9 +43,9 @@ module Bibliothecary
         source = options.fetch(:filename, nil)
         dependencies = []
 
-        # Pattern 1: name.url = "...";
+        # Pattern 1: name.url = "..."; or inputs.name.url = "...";
         # e.g., nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
-        file_contents.scan(/^\s*([\w][\w-]*)\.url\s*=\s*"([^"]+)"/) do |name, url|
+        file_contents.scan(/^\s*(?:inputs\.)?([\w][\w-]*)\.url\s*=\s*"([^"]+)"/) do |name, url|
           requirement = parse_flake_url(url)
           dependencies << Dependency.new(
             name: name,
@@ -56,10 +56,19 @@ module Bibliothecary
           )
         end
 
-        # Pattern 2: name = { url = "..."; ... };
+        # Pattern 2: name = { url = "..."; }; or name = { type = "github"; owner = "..."; repo = "..."; };
         # e.g., home-manager = { url = "github:nix-community/home-manager"; };
-        file_contents.scan(/^\s*([\w][\w-]*)\s*=\s*\{\s*\n?\s*url\s*=\s*"([^"]+)"/) do |name, url|
-          requirement = parse_flake_url(url)
+        file_contents.scan(/^\s*(?:inputs\.)?([\w][\w-]*)\s*=\s*\{([^{}]*)\}/) do |name, body|
+          # Skip dotted keys like nixpkgs.url so an `inputs = { ... }` block isn't read as one input
+          attrs = body.scan(/(?<![\w.-])([\w-]+)\s*=\s*"([^"]*)"/).to_h
+          if attrs["url"]
+            requirement = parse_flake_url(attrs["url"])
+          elsif attrs["type"]
+            requirement = attrs["ref"] || attrs["rev"] || "*"
+          else
+            next
+          end
+
           dependencies << Dependency.new(
             name: name,
             requirement: requirement,

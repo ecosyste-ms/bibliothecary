@@ -22,6 +22,23 @@ describe Bibliothecary::Parsers::Nix do
     })
   end
 
+  it "parses top-level and attribute-set inputs from flake.nix" do
+    expect(described_class.analyse_contents("flake.nix", load_fixture("nix/flake-inputs.nix"))).to eq({
+      platform: "nix",
+      path: "flake.nix",
+      project_name: nil,
+      dependencies: [
+        Bibliothecary::Dependency.new(platform: "nix", name: "nixpkgs", requirement: "nixos-24.05", type: "runtime", source: "flake.nix"),
+        Bibliothecary::Dependency.new(platform: "nix", name: "flake-utils", requirement: "*", type: "runtime", source: "flake.nix"),
+        Bibliothecary::Dependency.new(platform: "nix", name: "import-cargo", requirement: "*", type: "runtime", source: "flake.nix"),
+        Bibliothecary::Dependency.new(platform: "nix", name: "fenix", requirement: "monthly", type: "runtime", source: "flake.nix"),
+        Bibliothecary::Dependency.new(platform: "nix", name: "crane", requirement: "*", type: "runtime", source: "flake.nix"),
+      ],
+      kind: "manifest",
+      success: true,
+    })
+  end
+
   it "parses dependencies from flake.lock" do
     expect(described_class.analyse_contents("flake.lock", load_fixture("flake.lock"))).to eq({
       platform: "nix",
